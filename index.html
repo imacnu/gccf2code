@@ -39,7 +39,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 24px 52px;
-  border-bottom: 1px solid rgba(133,200,255,0.12);
+  border-bottom: none;
   position: sticky;
   top: 0;
   background: rgba(5,11,46,0.97);
@@ -57,7 +57,7 @@ body {
   height: auto;
   filter: brightness(0) saturate(100%) invert(97%) sepia(6%) saturate(111%) hue-rotate(181deg) brightness(116%) contrast(94%);
 }
-.header-meta { font-size: 11px; color: rgba(133,200,255,0.75); letter-spacing: 2px; text-transform: uppercase; }
+.header-meta { font-size: 11px; color: var(--serene); letter-spacing: 2px; text-transform: uppercase; }
 .scene-nav { display: flex; gap: 8px; }
 .nav-dot {
   width: 8px; height: 8px; border-radius: 50%;
@@ -90,6 +90,12 @@ body {
 
 /* ── PROGRESS ── */
 .progress-bar { height: 2px; background: rgba(133,200,255,0.1); }
+.progress-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
 .progress-fill {
   height: 100%;
   background: linear-gradient(90deg, var(--serene), var(--lime));
@@ -127,7 +133,7 @@ body {
 }
 .scene-num-label {
   font-size: 14px; text-transform: uppercase;
-  letter-spacing: 3px; color: rgba(133,200,255,0.65);
+  letter-spacing: 3px; color:  var(--serene);
   font-weight: 500;
 }
 
@@ -396,17 +402,17 @@ body {
 .hub-node {
   position: absolute; width: 70px; height: 70px;
   border-radius: 16px;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
   z-index: 4; animation: node-float 3s ease-in-out infinite;
 }
 .hub-node:nth-child(5){animation-delay:.4s}
 .hub-node:nth-child(6){animation-delay:.8s}
 .hub-node:nth-child(7){animation-delay:1.2s}
 @keyframes node-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-.hn-top{top:20px;left:50%;transform:translateX(-50%);background:rgba(0,19,145,.6);border:1px solid rgba(133,200,255,.4)}
-.hn-bot{bottom:20px;left:50%;transform:translateX(-50%);background:rgba(40,80,20,.5);border:1px solid rgba(136,231,131,.4)}
-.hn-l{left:16px;top:50%;transform:translateY(-50%);background:rgba(60,30,10,.5);border:1px solid rgba(255,181,107,.4)}
-.hn-r{right:16px;top:50%;transform:translateY(-50%);background:rgba(80,20,80,.5);border:1px solid rgba(150,148,255,.4)}
+.hn-top{top:20px;left:calc(50% - 35px);background:rgba(0,19,145,.6);border:1px solid rgba(133,200,255,.4)}
+.hn-bot{bottom:20px;left:calc(50% - 35px);background:rgba(40,80,20,.5);border:1px solid rgba(136,231,131,.4)}
+.hn-l{left:16px;top:calc(50% - 35px);background:rgba(60,30,10,.5);border:1px solid rgba(255,181,107,.4)}
+.hn-r{right:16px;top:calc(50% - 35px);background:rgba(80,20,80,.5);border:1px solid rgba(150,148,255,.4)}
 .hn-icon {
   width: 24px;
   height: 24px;
@@ -419,7 +425,7 @@ body {
   height: 24px;
   object-fit: contain;
 }
-.hn-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: rgba(247,248,248,.55); }
+.hn-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: rgba(247,248,248,.55); margin-top: 1px; }
 .mcp-tag {
   position: absolute; z-index: 6;
   background: rgba(150,148,255,.15); border: 1px solid rgba(150,148,255,.45);
@@ -660,8 +666,8 @@ body {
     <span class="font-ctrl-label" id="zoomLabel">100%</span>
     <button class="font-ctrl-btn" onclick="adjustZoom(+1)" title="Aumentar tamaño">A+</button>
   </div>
+  <div class="progress-bar"><div class="progress-fill" id="pf"></div></div>
 </header>
-<div class="progress-bar"><div class="progress-fill" id="pf"></div></div>
 
 
 <!-- ══════════ SCENE 1: FIGMA ══════════ -->
@@ -768,7 +774,9 @@ body {
       <div style="background:rgba(7,14,70,.5);border:1px solid rgba(133,200,255,.1);border-radius:14px;overflow:hidden;">
         <div class="pain-steps">
           <div class="pain-step">
-            <div class="pain-icon pi-design"><img class="icon-filter-blue" src="./assets/icons/illustration.svg" alt="Diseño"></div>
+            <div class="pain-icon pi-design">
+              <img src="./assets/icons/figma-icon.svg" alt="Figma">
+            </div>
             <div class="pain-content">
               <div class="pain-title">Diseñador termina en Figma</div>
               <div class="pain-desc">Componentes, tokens, especificaciones. Semanas de trabajo acumuladas.</div>
@@ -838,30 +846,32 @@ body {
         <div class="hub-ring hr-2"></div>
         <div class="hub-ring hr-3"></div>
         <div class="hub-node hn-top">
-          <div class="hn-icon"><img class="icon-filter-blue" src="./assets/icons/illustration.svg" alt=""></div>
+          <div class="hn-icon">
+            <img src="./assets/icons/figma-icon.svg" alt="">
+          </div>
           <div class="hn-label">Figma</div>
         </div>
         <div class="hub-node hn-bot">
-          <div class="hn-icon"><img class="icon-filter-green" src="./assets/icons/automate.svg" alt=""></div>
+          <div class="hn-icon"><img class="icon-filter-green" src="./assets/icons/code-brackets.svg" alt="Código"></div>
           <div class="hn-label">Código</div>
         </div>
         <div class="hub-node hn-l">
-          <div class="hn-icon"><img class="icon-filter-yellow" src="./assets/icons/link.svg" alt=""></div>
+          <div class="hn-icon"><img class="icon-filter-yellow" src="./assets/icons/git-branch.svg" alt="Git"></div>
           <div class="hn-label">Git</div>
         </div>
         <div class="hub-node hn-r">
-          <div class="hn-icon"><img class="icon-filter-purple" src="./assets/icons/services.svg" alt=""></div>
+          <div class="hn-icon"><img class="icon-filter-purple" src="./assets/icons/up-cloud.svg" alt="Deploy"></div>
           <div class="hn-label">Deploy</div>
         </div>
-        <div class="hub-brain"><img class="icon-filter-white" src="./assets/icons/chatgpt-simple.svg" alt="IA" style="width:46px;height:46px;object-fit:contain;"></div>
+        <div class="hub-brain"><img class="icon-filter-white" src="./assets/icons/ai.svg" alt="IA" style="width:46px;height:46px;object-fit:contain;"></div>
         <div class="mcp-tag mt-1">MCP</div>
         <div class="mcp-tag mt-2">MCP</div>
         <div class="mcp-tag mt-3">MCP</div>
         <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;" viewBox="0 0 480 480">
-          <line x1="240" y1="90" x2="240" y2="172" stroke="rgba(133,200,255,.45)" stroke-width="1" stroke-dasharray="4 4">
+          <line x1="240" y1="85" x2="240" y2="172" stroke="rgba(133,200,255,.45)" stroke-width="1" stroke-dasharray="4 4">
             <animate attributeName="stroke-dashoffset" from="0" to="-16" dur="1s" repeatCount="indefinite"/>
           </line>
-          <line x1="240" y1="368" x2="240" y2="308" stroke="rgba(136,231,131,.45)" stroke-width="1" stroke-dasharray="4 4">
+          <line x1="240" y1="385" x2="240" y2="308" stroke="rgba(136,231,131,.45)" stroke-width="1" stroke-dasharray="4 4">
             <animate attributeName="stroke-dashoffset" from="0" to="16" dur="1s" repeatCount="indefinite"/>
           </line>
           <line x1="86" y1="240" x2="172" y2="240" stroke="rgba(255,181,107,.45)" stroke-width="1" stroke-dasharray="4 4">
@@ -1070,7 +1080,10 @@ function navigateTo(idx,dir){
   el.querySelectorAll('.fi').forEach(fi=>fi.classList.remove('vis'));
   void el.offsetHeight; // force reflow
 
-  el.scrollIntoView({behavior:'smooth',block:'start'});
+  const header=document.querySelector('.header');
+  const headerOffset=(header?header.getBoundingClientRect().height:0);
+  const targetTop=Math.max(0,window.scrollY+el.getBoundingClientRect().top-headerOffset);
+  window.scrollTo({top:targetTop,behavior:'smooth'});
 
   // Double rAF ensures reflow is painted before re-adding .vis
   requestAnimationFrame(()=>requestAnimationFrame(()=>{
