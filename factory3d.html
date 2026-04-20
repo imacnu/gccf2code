@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fábrica de Software</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  overflow: hidden;
+  background: #040d28;
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+  user-select: none;
+  transition: background 0.6s;
+}
+body.mode-ia { background: #03100a; }
+
+#canvas-container {
+  width:100vw; height:100vh;
+  position:absolute; top:0; left:0; z-index:1;
+}
+#ui-layer {
+  position:absolute; top:0; left:0;
+  width:100%; height:100%;
+  pointer-events:none; z-index:10;
+}
+
+/* Loop label */
+@keyframes loop-pulse {
+  0%,100% { opacity:.85; transform:translate(-50%,-50%) scale(1); }
+  50%     { opacity:1;   transform:translate(-50%,-50%) scale(1.06); }
+}
+.loop-label {
+  position:absolute;
+  transform:translate(-50%,-50%);
+  padding:5px 14px 5px 11px;
+  border-radius:6px;
+  font-weight:700; font-size:11px;
+  text-transform:uppercase; letter-spacing:2px;
+  color:rgba(255,95,87,0.9);
+  background:rgba(255,95,87,0.08);
+  border:1px solid rgba(255,95,87,0.35);
+  backdrop-filter:blur(8px);
+  white-space:nowrap;
+  display:flex; align-items:center; gap:7px;
+  animation:loop-pulse 2.5s ease-in-out infinite;
+  transition:left 0.08s linear, top 0.08s linear, opacity 0.4s;
+}
+body.mode-ia .loop-label { opacity:0 !important; pointer-events:none; animation:none; }
+
+/* Stage labels */
+.stage-label {
+  position:absolute;
+  transform:translate(-50%,-50%);
+  padding:5px 14px;
+  border-radius:6px;
+  font-weight:700; font-size:11px;
+  text-transform:uppercase; letter-spacing:2.5px;
+  color:rgba(133,200,255,0.85);
+  background:rgba(4,13,40,0.88);
+  border:1px solid rgba(133,200,255,0.2);
+  backdrop-filter:blur(8px);
+  transition:left 0.08s linear, top 0.08s linear, border-color 0.5s, color 0.5s;
+  white-space:nowrap;
+}
+body.mode-ia .stage-label {
+  color:rgba(136,231,131,0.9);
+  border-color:rgba(136,231,131,0.25);
+}
+
+/* Floating cards shared */
+.float-card {
+  position:absolute;
+  transform:translate(-50%,-50%);
+  display:flex; align-items:center; gap:10px;
+  padding:10px 16px;
+  border-radius:10px;
+  font-size:13px; font-weight:600;
+  opacity:0; pointer-events:none;
+  transition:opacity 0.4s ease;
+}
+.float-card.visible { opacity:1; pointer-events:auto; }
+.icon-circle {
+  width:32px; height:32px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; flex-shrink:0;
+}
+.fc-label { display:flex; flex-direction:column; gap:1px; }
+.fc-label .sub { font-size:10px; font-weight:400; opacity:0.65; }
+
+/* Error cards (traditional) */
+@keyframes floatA { 0%,100%{transform:translate(-50%,-50%) translateY(0)} 50%{transform:translate(-50%,-50%) translateY(-10px)} }
+@keyframes floatB { 0%,100%{transform:translate(-50%,-50%) translateY(0)} 50%{transform:translate(-50%,-50%) translateY(-7px)} }
+@keyframes floatC { 0%,100%{transform:translate(-50%,-50%) translateY(0)} 50%{transform:translate(-50%,-50%) translateY(-9px)} }
+.ec-time   { background:rgba(255,231,97,0.08);  border:1px solid rgba(255,231,97,0.3);  color:#ffe761; animation:floatA 4s ease-in-out infinite; }
+.ec-bugs   { background:rgba(255,95,87,0.08);   border:1px solid rgba(255,95,87,0.3);   color:#ff8c87; animation:floatB 3.5s ease-in-out infinite; }
+.ec-cost   { background:rgba(255,95,87,0.07);   border:1px solid rgba(255,95,87,0.25);  color:#ff8c87; animation:floatC 4.5s ease-in-out infinite; }
+.ec-time  .icon-circle { background:rgba(255,231,97,0.15); }
+.ec-bugs  .icon-circle { background:rgba(255,95,87,0.15); }
+.ec-cost  .icon-circle { background:rgba(255,95,87,0.13); }
+
+/* Success cards (IA mode) */
+@keyframes floatD { 0%,100%{transform:translate(-50%,-50%) translateY(0)} 50%{transform:translate(-50%,-50%) translateY(-10px)} }
+@keyframes floatE { 0%,100%{transform:translate(-50%,-50%) translateY(0)} 50%{transform:translate(-50%,-50%) translateY(-7px)} }
+@keyframes floatF { 0%,100%{transform:translate(-50%,-50%) translateY(0)} 50%{transform:translate(-50%,-50%) translateY(-9px)} }
+.sc-speed  { background:rgba(133,200,255,0.08); border:1px solid rgba(133,200,255,0.3); color:#85C8FF; animation:floatD 3.5s ease-in-out infinite; }
+.sc-clean  { background:rgba(136,231,131,0.08); border:1px solid rgba(136,231,131,0.3); color:#88e783; animation:floatE 4s ease-in-out infinite; }
+.sc-cost   { background:rgba(255,231,97,0.08);  border:1px solid rgba(255,231,97,0.3);  color:#ffe761; animation:floatF 4.5s ease-in-out infinite; }
+.sc-speed .icon-circle { background:rgba(133,200,255,0.15); }
+.sc-clean .icon-circle { background:rgba(136,231,131,0.15); }
+.sc-cost  .icon-circle { background:rgba(255,231,97,0.15); }
+
+/* Controls bar */
+.controls {
+  position:absolute; bottom:16px; right:16px;
+  pointer-events:auto;
+  background:rgba(5,11,46,0.85);
+  padding:7px 14px;
+  border-radius:20px;
+  border:1px solid rgba(133,200,255,0.15);
+  backdrop-filter:blur(8px);
+  display:flex; align-items:center; gap:10px;
+}
+.ctrl-btn {
+  background:rgba(133,200,255,0.08);
+  border:1px solid rgba(133,200,255,0.2);
+  color:rgba(133,200,255,0.85);
+  padding:5px 12px; border-radius:14px;
+  font-size:11px; font-weight:600; cursor:pointer;
+  display:flex; align-items:center; gap:6px;
+  letter-spacing:0.4px;
+  transition:background .2s, border-color .2s, color .2s, box-shadow .2s;
+}
+.ctrl-btn:hover { background:rgba(133,200,255,0.16); }
+.ctrl-btn.ia-active {
+  background:rgba(136,231,131,0.12);
+  border-color:rgba(136,231,131,0.45);
+  color:#88e783;
+  box-shadow:0 0 14px rgba(136,231,131,0.25);
+}
+.ctrl-btn.ia-active:hover { background:rgba(136,231,131,0.2); }
+.hint { font-size:10px; color:rgba(133,200,255,0.38); letter-spacing:0.4px; }
+
+/* Mode badge */
+#mode-badge {
+  position:absolute; top:16px; left:50%;
+  transform:translateX(-50%);
+  padding:5px 18px;
+  border-radius:20px;
+  font-size:11px; font-weight:700;
+  letter-spacing:2px; text-transform:uppercase;
+  opacity:0;
+  transition:opacity 0.4s;
+  pointer-events:none;
+  white-space:nowrap;
+}
+#mode-badge.visible {
+  opacity:1;
+  background:rgba(136,231,131,0.1);
+  border:1px solid rgba(136,231,131,0.35);
+  color:#88e783;
+}
+</style>
+</head>
+<body>
+<div id="canvas-container"></div>
+<div id="ui-layer">
+  <div id="label-design"     class="stage-label">DISEÑO</div>
+  <div id="label-review"     class="stage-label">IMPLEMENTACIÓN</div>
+  <div id="label-correction" class="stage-label">CORRECCIÓN</div>
+  <div id="label-loop" class="loop-label" style="left:50%;bottom:58px;top:auto;transform:translateX(-50%)"><i class="fas fa-redo-alt"></i> Vuelta a empezar</div>
+
+  <div id="mode-badge">⚡ Modo IA Activado</div>
+
+  <!-- Error cards (traditional) -->
+  <div id="ec-time"  class="float-card ec-time"  style="left:74%;top:28%">
+    <div class="icon-circle"><i class="far fa-clock"></i></div>
+    <div class="fc-label"><span class="sub">+4 semanas</span><span>¿Eso no era 16px?</span></div>
+  </div>
+  <div id="ec-bugs"  class="float-card ec-bugs"  style="left:79%;top:52%">
+    <div class="icon-circle"><i class="fas fa-bug"></i></div>
+    <div class="fc-label"><span>Bugs</span></div>
+  </div>
+  <div id="ec-cost"  class="float-card ec-cost"  style="left:73%;top:74%">
+    <div class="icon-circle"><i class="fas fa-sync-alt"></i></div>
+    <div class="fc-label"><span class="sub">Ciclos de corrección</span><span>Alto coste</span></div>
+  </div>
+
+  <!-- Success cards (IA mode) -->
+  <div id="sc-speed" class="float-card sc-speed" style="left:74%;top:28%">
+    <div class="icon-circle"><i class="fas fa-bolt"></i></div>
+    <div class="fc-label"><span class="sub">Time to Market</span><span>2–4 horas</span></div>
+  </div>
+  <div id="sc-clean" class="float-card sc-clean" style="left:79%;top:52%">
+    <div class="icon-circle"><i class="fas fa-check-circle"></i></div>
+    <div class="fc-label"><span class="sub">Fidelidad pixel-perfect</span><span>Sin errores</span></div>
+  </div>
+  <div id="sc-cost"  class="float-card sc-cost"  style="left:73%;top:74%">
+    <div class="icon-circle"><i class="fas fa-arrow-down"></i></div>
+    <div class="fc-label"><span class="sub">Coste operativo</span><span>−80%</span></div>
+  </div>
+
+  <div class="controls">
+    <button id="mode-btn"   class="ctrl-btn"><i class="fas fa-robot"></i> Modo IA</button>
+    <button id="toggle-btn" class="ctrl-btn"><i class="fas fa-eye-slash"></i> Alertas</button>
+    <span class="hint"><i class="fas fa-mouse"></i> Arrastra</span>
+  </div>
+</div>
+
+<script>
+window.onload = function() {
+  /* ── THREE SETUP ── */
+  const container = document.getElementById('canvas-container');
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x040d28);
+
+  const aspect = window.innerWidth / window.innerHeight;
+  const d = 30;
+  const camera = new THREE.OrthographicCamera(-d*aspect, d*aspect, d, -d, 1, 1000);
+  camera.position.set(30, 30, 30);
+  camera.lookAt(new THREE.Vector3(-2, 9, 0));
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  container.appendChild(renderer.domElement);
+
+  /* ── LIGHTS ── */
+  scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+  const dirLight = new THREE.DirectionalLight(0x85C8FF, 0.6);
+  dirLight.position.set(20, 40, 20);
+  dirLight.castShadow = true;
+  dirLight.shadow.mapSize.set(1024, 1024);
+  dirLight.shadow.camera.left = -30; dirLight.shadow.camera.right = 30;
+  dirLight.shadow.camera.top  =  30; dirLight.shadow.camera.bottom = -30;
+  scene.add(dirLight);
+  const fillLight = new THREE.DirectionalLight(0xff5f57, 0.3);
+  fillLight.position.set(-20, 10, -10);
+  scene.add(fillLight);
+
+  /* ── COLORS ── */
+  const C = {
+    machine: 0x1a2234,
+    accent:  0xff5f57,
+    belt:    0x0e1120,
+    floor:   0x060e30,
+    serene:  0x85C8FF,
+    lime:    0x88e783,
+    yellow:  0xffe761,
+    skin:    0xffdcb3,
+  };
+
+  /* ── MATERIALS ── */
+  const matMachine = new THREE.MeshLambertMaterial({ color: C.machine });
+  const matBelt    = new THREE.MeshLambertMaterial({ color: C.belt });
+
+  /* ── FLOOR ── */
+  const floor = new THREE.Mesh(
+    new THREE.CylinderGeometry(35, 35, 0.5, 64),
+    new THREE.MeshLambertMaterial({ color: C.floor })
+  );
+  floor.position.y = -2; floor.receiveShadow = true;
+  scene.add(floor);
+
+  /* ── CONVEYORS ── */
+  const labelPoints = {
+    design:     new THREE.Vector3(-8, 12, -8),
+    review:     new THREE.Vector3(2, 6, 0),
+    correction: new THREE.Vector3(-8, 0, 8),
+    loop:       new THREE.Vector3(9, 1, 14),
+  };
+
+  function createConveyor(x, y, z, length, accentColor) {
+    const g = new THREE.Group();
+    const structureMat = new THREE.MeshLambertMaterial({ color: accentColor || C.machine });
+    const structure = new THREE.Mesh(new THREE.BoxGeometry(length+2, 1.5, 4), structureMat);
+    structure.receiveShadow = true; structure.castShadow = true;
+    g.add(structure);
+    const belt = new THREE.Mesh(new THREE.BoxGeometry(length, 1.6, 3), matBelt);
+    g.add(belt);
+    const legMat = new THREE.MeshLambertMaterial({ color: 0x3a4a60 });
+    [[-length/2+2,1.5],[-length/2+2,-1.5],[length/2-2,1.5],[length/2-2,-1.5]].forEach(([lx,lz])=>{
+      const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.3,y+2,16), legMat);
+      leg.position.set(lx, -(y+2)/2+0.5, lz);
+      leg.castShadow = true; g.add(leg);
+    });
+    for (let i=-length/2+1; i<length/2; i+=2) {
+      const roller = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.2,0.2,3.2,8),
+        new THREE.MeshLambertMaterial({ color: 0x4a6080 })
+      );
+      roller.rotation.x = Math.PI/2;
+      roller.position.set(i, 0.8, 0);
+      g.add(roller);
+    }
+    g.position.set(x, y, z);
+    scene.add(g);
+    return { group: g, mat: structureMat };
+  }
+
+  createConveyor(-5, 10, -10, 20, null);
+  const reviewConveyor = createConveyor(5, 5, 0, 20, C.accent);
+  createConveyor(-5, 0, 10, 20, null);
+
+  /* ── RETURN PATH (traditional only) ── */
+  const returnCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3( 10,  2,  10),
+    new THREE.Vector3( 15,  3,   6),
+    new THREE.Vector3( 15,  8,  -2),
+    new THREE.Vector3(  4, 13,  -8),
+    new THREE.Vector3(-13, 12, -10),
+  ]);
+
+  const returnGroup = new THREE.Group();
+  scene.add(returnGroup);
+
+  const tubeMat = new THREE.MeshLambertMaterial({ color: 0xff5f57, transparent: true, opacity: 0.35 });
+  const returnTube = new THREE.Mesh(
+    new THREE.TubeGeometry(returnCurve, 80, 0.18, 8, false),
+    tubeMat
+  );
+  returnGroup.add(returnTube);
+
+  const arrowMat = new THREE.MeshLambertMaterial({ color: 0xff5f57 });
+  for (let t = 0.1; t <= 0.92; t += 0.165) {
+    const pos = returnCurve.getPoint(t);
+    const tan = returnCurve.getTangent(t).normalize();
+    const cone = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.85, 8), arrowMat);
+    cone.position.copy(pos);
+    cone.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), tan);
+    returnGroup.add(cone);
+  }
+
+  /* put loop label at the far-right apex of the curve, away from items */
+  labelPoints.loop = returnCurve.getPoint(0.22);
+
+  /* ── GENERATOR ── */
+  const gen = new THREE.Mesh(new THREE.BoxGeometry(4, 8, 6), matMachine);
+  gen.position.set(-15, 13, -10); gen.castShadow = true; scene.add(gen);
+  const tank = new THREE.Mesh(new THREE.CylinderGeometry(1.5,1.5,3,16),
+    new THREE.MeshLambertMaterial({ color: C.accent }));
+  tank.position.set(-15, 18.5, -10); tank.castShadow = true; scene.add(tank);
+  const tankMat = tank.material;
+
+  /* ── ROBOT ARM ── */
+  const robotGroup = new THREE.Group();
+  robotGroup.position.set(7, 10, -5);
+  const baseR = new THREE.Mesh(new THREE.CylinderGeometry(1,1,2), matMachine);
+  baseR.castShadow = true; robotGroup.add(baseR);
+  const arm1 = new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.5,8),
+    new THREE.MeshLambertMaterial({ color: C.yellow }));
+  arm1.rotation.z = Math.PI/4; arm1.position.set(0,4,0);
+  arm1.castShadow = true; robotGroup.add(arm1);
+  const joint = new THREE.Mesh(new THREE.SphereGeometry(1), matMachine);
+  joint.position.set(2.8,6.8,0); robotGroup.add(joint);
+  scene.add(robotGroup);
+
+  /* ── CHUTE ── */
+  const chute = new THREE.Mesh(new THREE.BoxGeometry(4,1,12), matMachine);
+  chute.rotation.x = Math.PI/4; chute.position.set(-3,3.5,5);
+  chute.castShadow = true; scene.add(chute);
+
+  /* ── WORKERS ── */
+  function createWorker(x,y,z) {
+    const g = new THREE.Group();
+    const bodyMat = new THREE.MeshLambertMaterial({ color: C.serene });
+    const body = new THREE.Mesh(new THREE.ConeGeometry(1,2.5,16), bodyMat);
+    body.position.y = 1.25; body.castShadow = true; g.add(body);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.6,16,16),
+      new THREE.MeshLambertMaterial({ color: C.skin }));
+    head.position.y = 3; head.castShadow = true; g.add(head);
+    const hat = new THREE.Mesh(new THREE.SphereGeometry(0.65,16,16,0,Math.PI*2,0,Math.PI/2),
+      new THREE.MeshLambertMaterial({ color: C.yellow }));
+    hat.position.y = 3.1; hat.castShadow = true; g.add(hat);
+    g.position.set(x,y,z); scene.add(g);
+    return { group: g, bodyMat };
+  }
+  const workers = [
+    createWorker(-10,-1.5,-6),
+    createWorker(  2,-1.5, 4),
+    createWorker(-12,-1.5,14),
+  ];
+
+  /* ── ITEMS ── */
+  const items = [];
+  const itemGeo = new THREE.BoxGeometry(2,0.5,2);
+  const mats = {
+    wire:    new THREE.MeshLambertMaterial({ color: 0x4a6080 }),
+    ui:      new THREE.MeshLambertMaterial({ color: C.serene }),
+    buggy:   new THREE.MeshLambertMaterial({ color: C.accent }),
+    success: new THREE.MeshLambertMaterial({ color: C.lime }),
+  };
+
+  /* ── MODE STATE ── */
+  let mode = 'traditional';
+  let alertsVisible = true;
+  /* show error cards by default */
+  ['ec-time','ec-bugs','ec-cost'].forEach(id =>
+    document.getElementById(id).classList.add('visible'));
+  const SPEED     = { traditional: 0.28, ia: 1.4 };
+  const SPAWN_INT = { traditional: 2200, ia: 850 };
+
+  function spawnItem() {
+    const mesh = new THREE.Mesh(itemGeo, mats.wire);
+    mesh.castShadow = true; scene.add(mesh);
+    items.push({ mesh, stage: 0, progress: 0 });
+  }
+
+  let spawnTimer = setInterval(spawnItem, SPAWN_INT.traditional);
+
+  /* ── MODE SWITCH ── */
+  function setMode(newMode) {
+    mode = newMode;
+    const isIA = newMode === 'ia';
+
+    /* clear belt items */
+    items.forEach(item => scene.remove(item.mesh));
+    items.length = 0;
+
+    /* belt & tank color */
+    reviewConveyor.mat.color.set(isIA ? C.lime : C.accent);
+    tankMat.color.set(isIA ? C.lime : C.accent);
+
+    /* fill light tint */
+    fillLight.color.set(isIA ? 0x88e783 : 0xff5f57);
+
+    /* body background */
+    document.body.classList.toggle('mode-ia', isIA);
+    scene.background.set(isIA ? new THREE.Color(0x030f08) : new THREE.Color(0x040d28));
+
+    /* badge */
+    document.getElementById('mode-badge').classList.toggle('visible', isIA);
+
+    /* correction label + return path: hidden in IA mode */
+    document.getElementById('label-correction').style.opacity = isIA ? '0' : '';
+    returnGroup.visible = !isIA;
+
+    /* workers: hidden in IA mode */
+    workers.forEach(w => w.group.visible = !isIA);
+
+    /* reset cards, then show the right set */
+    document.querySelectorAll('.float-card').forEach(c => c.classList.remove('visible'));
+    alertsVisible = true;
+    const showIds = isIA ? ['sc-speed','sc-clean','sc-cost'] : ['ec-time','ec-bugs','ec-cost'];
+    showIds.forEach(id => document.getElementById(id).classList.add('visible'));
+    document.getElementById('toggle-btn').innerHTML = '<i class="fas fa-eye-slash"></i> Alertas';
+
+    /* spawn speed */
+    clearInterval(spawnTimer);
+    spawnTimer = setInterval(spawnItem, SPAWN_INT[newMode]);
+
+    /* mode button */
+    const btn = document.getElementById('mode-btn');
+    if (isIA) {
+      btn.classList.add('ia-active');
+      btn.innerHTML = '<i class="fas fa-industry"></i> Modo Tradicional';
+    } else {
+      btn.classList.remove('ia-active');
+      btn.innerHTML = '<i class="fas fa-robot"></i> Modo IA';
+    }
+  }
+
+  document.getElementById('mode-btn').addEventListener('click', () =>
+    setMode(mode === 'traditional' ? 'ia' : 'traditional')
+  );
+
+  /* ── ALERTS TOGGLE ── */
+  document.getElementById('toggle-btn').addEventListener('click', () => {
+    alertsVisible = !alertsVisible;
+    const ids = mode === 'ia'
+      ? ['sc-speed','sc-clean','sc-cost']
+      : ['ec-time','ec-bugs','ec-cost'];
+    ids.forEach(id => document.getElementById(id).classList.toggle('visible', alertsVisible));
+    document.getElementById('toggle-btn').innerHTML = alertsVisible
+      ? '<i class="fas fa-eye-slash"></i> Alertas'
+      : '<i class="fas fa-eye"></i> Alertas';
+  });
+
+  /* ── DRAG ROTATE ── */
+  let isDragging = false, prevX = 0;
+  document.addEventListener('mousedown', () => isDragging = true);
+  document.addEventListener('mouseup',   () => isDragging = false);
+  document.addEventListener('mousemove', e => {
+    if (isDragging) scene.rotation.y += (e.clientX - prevX) * 0.005;
+    prevX = e.clientX;
+  });
+  document.addEventListener('touchstart', e => {
+    isDragging = true; prevX = e.touches[0].clientX;
+  }, {passive:true});
+  document.addEventListener('touchend', () => isDragging = false);
+  document.addEventListener('touchmove', e => {
+    if (isDragging) scene.rotation.y += (e.touches[0].clientX - prevX) * 0.005;
+    prevX = e.touches[0].clientX;
+  }, {passive:true});
+
+  /* ── LABEL UPDATER ── */
+  const vec = new THREE.Vector3();
+  const cvs = renderer.domElement;
+  function updateLabel(id, point) {
+    vec.copy(point);
+    vec.applyMatrix4(scene.matrixWorld);
+    vec.project(camera);
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.left = ((vec.x*.5+.5)*cvs.clientWidth)+'px';
+      el.style.top  = ((vec.y*-.5+.5)*cvs.clientHeight)+'px';
+    }
+  }
+
+  /* ── ANIMATE ── */
+  const clock = new THREE.Clock();
+  function animate() {
+    requestAnimationFrame(animate);
+    const delta = clock.getDelta();
+    const time  = clock.getElapsedTime();
+    const speed = SPEED[mode];
+    const isIA  = mode === 'ia';
+
+    /* robot arm — faster in IA mode */
+    robotGroup.rotation.y = Math.sin(time * (isIA ? 4 : 2)) * 0.5;
+
+    /* pulse return tube */
+    if (!isIA) tubeMat.opacity = 0.2 + Math.sin(time * 2.5) * 0.13;
+
+    /* items */
+    for (let i = items.length-1; i >= 0; i--) {
+      const item = items[i];
+      item.progress += delta * speed;
+
+      if (item.stage === 0) {
+        item.mesh.position.set(-13 + 18*item.progress, 11, -10);
+        if (item.progress > (isIA ? 0.2 : 0.5)) item.mesh.material = mats.ui;
+        if (item.progress >= 1) { item.stage = 1; item.progress = 0; }
+      } else if (item.stage === 1) {
+        item.mesh.position.set(13 - 16*item.progress, 6, 0);
+        if (item.progress >= 1) {
+          item.stage = 2; item.progress = 0;
+          item.mesh.material = isIA ? mats.success : mats.buggy;
+        }
+      } else if (item.stage === 2) {
+        item.mesh.position.set(-13 + 23*item.progress, 1, 10);
+        if (isIA && item.progress > 0.85) {
+          const s = 1 + (item.progress - 0.85) * 2;
+          item.mesh.scale.setScalar(s);
+        }
+        if (item.progress >= 1) {
+          if (isIA) { scene.remove(item.mesh); items.splice(i, 1); }
+          else       { item.stage = 3; item.progress = 0; item.mesh.scale.setScalar(1); }
+        }
+      } else if (item.stage === 3) {
+        /* travel back along the return curve */
+        const pt = returnCurve.getPoint(item.progress);
+        item.mesh.position.copy(pt);
+        if (item.progress >= 1) { scene.remove(item.mesh); items.splice(i, 1); }
+      }
+    }
+
+    updateLabel('label-design',     labelPoints.design);
+    updateLabel('label-review',     labelPoints.review);
+    updateLabel('label-correction', labelPoints.correction);
+
+    renderer.render(scene, camera);
+  }
+
+  window.addEventListener('resize', () => {
+    const a = window.innerWidth/window.innerHeight;
+    camera.left=-d*a; camera.right=d*a;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  });
+
+  animate();
+};
+</script>
+</body>
+</html>

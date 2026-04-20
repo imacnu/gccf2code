@@ -248,6 +248,61 @@ body {
   display: flex; flex-direction: column; gap: 16px;
   align-items: center;
 }
+/* ── FACTORY 3D PREVIEW ── */
+.factory-3d-preview {
+  position: relative; width: 100%;
+  aspect-ratio: 16/10;
+  border-radius: 16px; overflow: hidden;
+  cursor: pointer;
+  border: 1px solid rgba(255,95,87,0.2);
+}
+.factory-3d-preview iframe {
+  width: 100%; height: 100%; border: none;
+  display: block; pointer-events: none;
+}
+.factory-expand-hint {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  color: rgba(255,255,255,0.9);
+  font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+  opacity: 0;
+  transition: opacity .25s, background .25s;
+}
+.factory-3d-preview:hover .factory-expand-hint {
+  opacity: 1; background: rgba(4,13,40,0.45);
+}
+
+/* ── FACTORY 3D MODAL ── */
+.factory-modal {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(2,5,20,0.8);
+  backdrop-filter: blur(18px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s;
+}
+.factory-modal.open { opacity: 1; pointer-events: auto; }
+.factory-modal-inner {
+  position: relative;
+  width: 90vw; height: 86vh;
+  border-radius: 20px; overflow: hidden;
+  border: 1px solid rgba(133,200,255,0.18);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+  transform: scale(0.88);
+  transition: transform .35s cubic-bezier(0.16,1,0.3,1);
+}
+.factory-modal.open .factory-modal-inner { transform: scale(1); }
+.factory-modal-inner iframe { width:100%; height:100%; border:none; display:block; }
+.factory-modal-close {
+  position: absolute; top:14px; right:14px; z-index:10;
+  width:36px; height:36px; border-radius:50%;
+  background: rgba(5,11,46,0.9); border:1px solid rgba(133,200,255,0.25);
+  color: rgba(133,200,255,0.8); cursor: pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition: background .2s, border-color .2s;
+}
+.factory-modal-close:hover { background:rgba(133,200,255,0.15); border-color:rgba(133,200,255,0.5); }
+
 .conveyor-svg-wrap {
   width: 100%;
   background: rgba(255,255,255,0.02);
@@ -701,103 +756,12 @@ body {
   <div class="right-panel fi fi-d2">
     <div class="factory-wrap">
 
-      <!-- ISOMETRIC CONVEYOR BELT SVG — inspired by the uploaded illustration -->
-      <div class="conveyor-svg-wrap">
-        <svg viewBox="0 0 480 220" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block;">
-          <!-- Background ambient -->
-          <defs>
-            <linearGradient id="beltGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1"/>
-              <stop offset="100%" style="stop-color:#0e0a20;stop-opacity:1"/>
-            </linearGradient>
-          </defs>
-
-          <!-- CONVEYOR BELT — isometric S-curve inspired by uploaded image -->
-          <!-- Main belt body (dark gray like reference) -->
-          <!-- Top horizontal segment -->
-          <rect x="30" y="60" width="180" height="28" rx="14" fill="#2a2a3a" stroke="#ff5f57" stroke-width="1" stroke-opacity="0.4"/>
-          <!-- Belt highlight (yellow border like reference) -->
-          <rect x="30" y="60" width="180" height="6" rx="3" fill="#ff5f57" fill-opacity="0.25"/>
-          <rect x="30" y="82" width="180" height="6" rx="3" fill="#ff5f57" fill-opacity="0.25"/>
-
-          <!-- Curve connector 1 (right side) -->
-          <path d="M210 74 Q240 74 240 100 Q240 126 210 126" fill="none" stroke="#2a2a3a" stroke-width="28"/>
-          <path d="M210 60 Q254 60 254 100 Q254 140 210 140" fill="none" stroke="#ff5f57" stroke-width="2" stroke-opacity="0.35" stroke-dasharray="none"/>
-          <path d="M210 88 Q226 88 226 100 Q226 112 210 112" fill="none" stroke="#ff5f57" stroke-width="2" stroke-opacity="0.25"/>
-
-          <!-- Bottom horizontal segment -->
-          <rect x="30" y="112" width="180" height="28" rx="14" fill="#2a2a3a" stroke="#ff5f57" stroke-width="1" stroke-opacity="0.3"/>
-          <rect x="30" y="112" width="180" height="6" rx="3" fill="#ff5f57" fill-opacity="0.2"/>
-          <rect x="30" y="134" width="180" height="6" rx="3" fill="#ff5f57" fill-opacity="0.2"/>
-
-          <!-- Curve connector 2 (left side) -->
-          <path d="M30 126 Q0 126 0 152 Q0 178 30 178" fill="none" stroke="#2a2a3a" stroke-width="28"/>
-          <path d="M30 112 Q-14 112 -14 152 Q-14 192 30 192" fill="none" stroke="#ff5f57" stroke-width="2" stroke-opacity="0.3"/>
-
-          <!-- Bottom-exit segment -->
-          <rect x="30" y="164" width="200" height="28" rx="14" fill="#2a2a3a" stroke="#ff5f57" stroke-width="1" stroke-opacity="0.3"/>
-
-          <!-- PRODUCTS ON BELT — circular items like reference -->
-          <circle cx="60" cy="74" r="9" fill="#3a3a4a" stroke="#85C8FF" stroke-width="1.5" stroke-opacity="0.5"/>
-          <circle cx="100" cy="74" r="9" fill="#3a3a4a" stroke="#85C8FF" stroke-width="1.5" stroke-opacity="0.5"/>
-          <circle cx="140" cy="74" r="9" fill="#3a3a4a" stroke="#FF5F57" stroke-width="1.5" stroke-opacity="0.6"/>
-          <image href="./assets/icons/limit-exceeded.svg" x="135" y="69" width="10" height="10" style="filter:brightness(0) saturate(100%) invert(73%) sepia(34%) saturate(6096%) hue-rotate(317deg) brightness(100%) contrast(101%);"/>
-          <circle cx="180" cy="74" r="9" fill="#3a3a4a" stroke="#85C8FF" stroke-width="1.5" stroke-opacity="0.5"/>
-
-          <circle cx="180" cy="126" r="9" fill="#3a3a4a" stroke="#FF5F57" stroke-width="1.5" stroke-opacity="0.6"/>
-          <image href="./assets/icons/limit-exceeded.svg" x="175" y="121" width="10" height="10" style="filter:brightness(0) saturate(100%) invert(73%) sepia(34%) saturate(6096%) hue-rotate(317deg) brightness(100%) contrast(101%);"/>
-          <circle cx="140" cy="126" r="9" fill="#3a3a4a" stroke="#85C8FF" stroke-width="1.5" stroke-opacity="0.4"/>
-          <circle cx="80" cy="126" r="9" fill="#3a3a4a" stroke="#FF5F57" stroke-width="1.5" stroke-opacity="0.6"/>
-          <image href="./assets/icons/limit-exceeded.svg" x="75" y="121" width="10" height="10" style="filter:brightness(0) saturate(100%) invert(73%) sepia(34%) saturate(6096%) hue-rotate(317deg) brightness(100%) contrast(101%);"/>
-
-          <!-- WORKER FIGURES (simplified like reference) -->
-          <!-- Worker 1 at control panel -->
-          <rect x="230" y="45" width="36" height="48" rx="4" fill="#1a2040" stroke="#85C8FF" stroke-width="1" stroke-opacity="0.4"/>
-          <line x1="234" y1="52" x2="262" y2="52" stroke="#85C8FF" stroke-width="1" stroke-opacity="0.5"/>
-          <line x1="234" y1="57" x2="255" y2="57" stroke="#85C8FF" stroke-width="1" stroke-opacity="0.3"/>
-          <line x1="234" y1="62" x2="258" y2="62" stroke="#85C8FF" stroke-width="1" stroke-opacity="0.3"/>
-          <!-- worker body -->
-          <circle cx="290" cy="55" r="7" fill="#85C8FF" fill-opacity="0.6"/>
-          <rect x="284" y="63" width="12" height="20" rx="3" fill="#85C8FF" fill-opacity="0.4"/>
-          <line x1="248" y1="69" x2="287" y2="69" stroke="#ff5f57" stroke-width="1" stroke-dasharray="3 3" stroke-opacity="0.5"/>
-
-          <!-- Worker 2 looking at design vs code -->
-          <circle cx="320" cy="105" r="7" fill="#FFE761" fill-opacity="0.6"/>
-          <rect x="314" y="113" width="12" height="20" rx="3" fill="#FFE761" fill-opacity="0.4"/>
-          <!-- speech bubble -->
-          <rect x="330" y="98" width="80" height="20" rx="5" fill="#2a1a1a" stroke="#ff5f57" stroke-width="1" stroke-opacity="0.5"/>
-          <text x="338" y="112" fill="#ff8c87" font-size="8" font-family="DM Sans, sans-serif">¿Eso no era 16px?</text>
-
-          <!-- Worker 3 at exit -->
-          <circle cx="300" cy="165" r="7" fill="#9694FF" fill-opacity="0.6"/>
-          <rect x="294" y="173" width="12" height="20" rx="3" fill="#9694FF" fill-opacity="0.4"/>
-
-          <!-- Clock icon (time waste) -->
-          <circle cx="400" cy="70" r="22" fill="#1a1a2e" stroke="#FFE761" stroke-width="1.5" stroke-opacity="0.5"/>
-          <line x1="400" y1="55" x2="400" y2="70" stroke="#FFE761" stroke-width="2" stroke-opacity="0.7"/>
-          <line x1="400" y1="70" x2="412" y2="76" stroke="#FFE761" stroke-width="2" stroke-opacity="0.7"/>
-          <text x="400" y="105" text-anchor="middle" fill="#FFE761" font-size="9" fill-opacity="0.7" font-family="DM Sans,sans-serif">+4 semanas</text>
-
-          <!-- Bug/Error icon -->
-          <circle cx="430" cy="140" r="18" fill="#2a0a0a" stroke="#FF5F57" stroke-width="1.5" stroke-opacity="0.6"/>
-          <image href="./assets/icons/sign-and-review.svg" x="422" y="132" width="16" height="16" style="filter:brightness(0) saturate(100%) invert(73%) sepia(34%) saturate(6096%) hue-rotate(317deg) brightness(100%) contrast(101%);"/>
-          <text x="430" y="170" text-anchor="middle" fill="#ff8c87" font-size="9" font-family="DM Sans,sans-serif">Bugs</text>
-
-          <!-- Money/cost icon -->
-          <circle cx="390" cy="185" r="18" fill="#1a2010" stroke="#88E783" stroke-width="1.5" stroke-opacity="0.4"/>
-          <image href="./assets/icons/balance-euro.svg" x="382" y="177" width="16" height="16" style="filter:brightness(0) saturate(100%) invert(82%) sepia(17%) saturate(1089%) hue-rotate(58deg) brightness(96%) contrast(92%);"/>
-          <text x="390" y="215" text-anchor="middle" fill="rgba(136,231,131,0.6)" font-size="9" font-family="DM Sans,sans-serif">Alto coste</text>
-
-          <!-- Labels on belt -->
-          <text x="110" y="52" text-anchor="middle" fill="rgba(133,200,255,0.5)" font-size="8" font-family="DM Sans,sans-serif" letter-spacing="1">DISEÑO</text>
-          <text x="110" y="106" text-anchor="middle" fill="rgba(255,95,87,0.5)" font-size="8" font-family="DM Sans,sans-serif" letter-spacing="1">REVIEW</text>
-          <text x="120" y="158" text-anchor="middle" fill="rgba(255,231,97,0.5)" font-size="8" font-family="DM Sans,sans-serif" letter-spacing="1">CORRECCIÓN</text>
-
-          <!-- Animated dots on belt to show movement -->
-          <circle cx="60" cy="74" r="3" fill="rgba(133,200,255,0.6)">
-            <animateTransform attributeName="transform" type="translate" from="0 0" to="120 0" dur="3s" repeatCount="indefinite"/>
-          </circle>
-        </svg>
+      <div class="factory-3d-preview" onclick="openFactory3D()">
+        <iframe src="./factory3d.html" scrolling="no" frameborder="0" tabindex="-1"></iframe>
+        <div class="factory-expand-hint">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Ampliar</span>
+        </div>
       </div>
 
       <!-- PAIN STEPS — large icons -->
@@ -1141,8 +1105,22 @@ const obs=new IntersectionObserver((entries)=>{
 document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
 document.querySelectorAll('[data-s]').forEach(el=>obs.observe(el));
 
+/* ── Factory 3D modal ── */
+function openFactory3D(){
+  const iframe=document.getElementById('factory3d-iframe');
+  if(!iframe.src||iframe.src===location.href) iframe.src='./factory3d.html';
+  document.getElementById('factory3d-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeFactory3D(){
+  document.getElementById('factory3d-modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+
 /* ── Keyboard navigation ── */
 document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){ closeFactory3D(); return; }
+  if(document.getElementById('factory3d-modal').classList.contains('open')) return;
   if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();navigateSlide(1);}
   else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();navigateSlide(-1);}
 });
@@ -1165,6 +1143,16 @@ function adjustZoom(dir){
 applyFz();
 updateNavBtns();
 </script>
+
+<!-- ── FACTORY 3D MODAL ── -->
+<div id="factory3d-modal" class="factory-modal" onclick="if(event.target===this)closeFactory3D()">
+  <div class="factory-modal-inner">
+    <button class="factory-modal-close" onclick="closeFactory3D()">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1 1l11 11M12 1L1 12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+    </button>
+    <iframe id="factory3d-iframe" src="" scrolling="no" frameborder="0"></iframe>
+  </div>
+</div>
 
 <div class="slide-nav">
   <button class="slide-nav-btn" id="btnPrev" disabled onclick="navigateSlide(-1)" title="Anterior (←)">
