@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Figma — BBVA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --bbva-electric: #001391;
+    --bbva-sand: #F7F8F8;
+    --bbva-midnight: #070E46;
+    --bbva-serene: #85C8FF;
+    --bbva-canary: #FFE761;
+    --bbva-lime: #88E783;
+    --bbva-purple: #9694FF;
+    --bbva-aqua: #8BE1E9;
+    --bbva-mandarin: #FFB56B;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background-color: var(--bbva-sand);
+    margin: 0;
+    overflow: hidden;
+    font-weight: 400;
+  }
+
+  h1, h2, h3, h4, .font-serif {
+    font-family: 'Lora', serif;
+    letter-spacing: -0.02em;
+  }
+
+  .bento-card {
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .sticker {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 100px;
+    font-weight: 500;
+    font-size: 0.75rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+  }
+
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+
+  .float-anim { animation: float 6s ease-in-out infinite; }
+
+  .slide { display: none; }
+  .slide.active { display: flex; }
+
+  .dot-btn { transition: all 0.3s ease; }
+  .dot-btn.active { width: 20px; background-color: #001391; }
+  .dot-btn:not(.active) { background-color: #d1d5db; }
+</style>
+</head>
+<body class="w-screen h-screen overflow-hidden">
+
+<div class="w-screen h-screen overflow-hidden flex flex-col bg-[#F7F8F8] relative">
+
+  <!-- SLIDE 1 -->
+  <div id="slide-0" class="slide active flex-col justify-center bg-[#F7F8F8] w-full h-full p-6 pb-32 md:p-12 md:pb-32 overflow-y-auto">
+    <div class="max-w-6xl w-full mx-auto my-auto">
+      <div class="mt-8 md:mt-12 mb-6 md:mb-8 bento-card bg-[#85C8FF] text-[#001391] p-4 md:p-6 rounded-2xl w-max">
+        <h2 class="font-serif text-2xl md:text-3xl font-bold">¿Qué es Figma?</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 w-full">
+        <!-- Card 1 -->
+        <div class="bento-card delay-100 bg-white p-6 md:p-8 border border-gray-100 flex flex-col items-start justify-start">
+          <div class="p-3 md:p-4 bg-[#8BE1E9] rounded-2xl text-[#001391] mb-4 md:mb-6">
+            <svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 20a6 6 0 01-2-11.6A8 8 0 0122 10a6 6 0 012 10h-6"/>
+              <circle cx="16" cy="20" r="2" fill="currentColor" stroke="none"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-serif text-xl md:text-2xl font-bold text-[#070E46] mb-2 md:mb-3">Plataforma de Diseño</h3>
+            <p class="text-[#46536D] text-sm md:text-base leading-relaxed">
+              Una plataforma de diseño de interfaces que permite prototipar de manera ágil y fiel las interfaces de los productos digitales de BBVA.
+            </p>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="bento-card delay-200 bg-[#001391] text-white p-6 md:p-8 flex flex-col items-start justify-start relative overflow-hidden">
+          <div class="absolute top-4 right-4 z-10">
+            <span class="sticker bg-[#88E783] text-[#070E46] font-medium">Clave en BBVA</span>
+          </div>
+          <div class="p-3 md:p-4 bg-white/10 rounded-2xl mb-4 md:mb-6">
+            <svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 14v10"/><path d="M10 18l6-4 6 4"/>
+              <circle cx="16" cy="8" r="3" fill="currentColor" stroke="none"/>
+            </svg>
+          </div>
+          <div class="relative z-10">
+            <h3 class="font-serif text-xl md:text-2xl font-bold mb-2 md:mb-3">Multijugador</h3>
+            <p class="text-white/80 text-sm md:text-base leading-relaxed">
+              Permite que múltiples personas trabajen simultáneamente en el mismo archivo, como un documento compartido, pero para diseño visual.
+            </p>
+          </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="bento-card delay-300 bg-white p-6 md:p-8 border border-gray-100 flex flex-col items-start justify-start">
+          <div class="p-3 md:p-4 bg-[#9694FF] rounded-2xl text-white mb-4 md:mb-6">
+            <svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 8h16v16H8z"/>
+              <circle cx="8" cy="8" r="2" fill="currentColor"/>
+              <circle cx="24" cy="24" r="2" fill="currentColor"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-serif text-xl md:text-2xl font-bold text-[#070E46] mb-2 md:mb-3">UI Design System</h3>
+            <p class="text-[#46536D] text-sm md:text-base leading-relaxed">
+              Herramientas precisas para crear interfaces apoyadas en el Sistema de Diseño.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2 -->
+  <div id="slide-1" class="slide flex-col justify-center bg-[#85C8FF] w-full h-full p-6 pb-32 md:p-12 md:pb-32 overflow-y-auto">
+    <div class="max-w-6xl w-full mx-auto my-auto">
+      <div class="mt-8 md:mt-12 mb-6 md:mb-8 flex justify-between items-end w-full">
+        <h2 class="font-serif text-3xl md:text-5xl font-bold text-[#001391]">¿Para qué sirve?</h2>
+        <span class="sticker bg-white text-[#001391] font-medium hidden md:flex">Layout Bentō</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4" style="grid-template-rows: auto auto;">
+        <!-- Card A: col-span-2 row-span-1 -->
+        <div class="bento-card delay-100 md:col-span-2 bg-[#001391] text-white p-6 md:p-8 flex items-center gap-6">
+          <div class="flex-1">
+            <h3 class="font-serif text-xl md:text-2xl font-bold mb-2">Diseño Adaptativo</h3>
+            <p class="opacity-80 text-sm md:text-base">Construcción de interfaces fluidas mediante Auto Layout que se adaptan automáticamente a cualquier dispositivo y resolución.</p>
+          </div>
+        </div>
+        <!-- Card B: col-span-2 row-span-2 -->
+        <div class="bento-card delay-200 md:col-span-2 bg-white text-[#070E46] p-6 md:p-8 flex flex-col justify-between" style="grid-row: span 2;">
+          <div>
+            <span class="sticker bg-[#FFB56B] text-[#070E46] font-medium mb-4">Eficiencia</span>
+            <h3 class="font-serif text-2xl md:text-3xl font-bold mb-3 md:mb-4 mt-2">Sistemas de Diseño</h3>
+            <p class="text-[#46536D] text-sm md:text-base mb-4 md:mb-6">
+              Crear, mantener y distribuir componentes reutilizables (botones, tarjetas, tipografías) para asegurar consistencia visual.
+            </p>
+          </div>
+          <div class="bg-[#F7F8F8] rounded-xl p-4 flex gap-4 items-center justify-center float-anim border border-[#CAD1D8]">
+            <div class="w-8 h-8 md:w-10 md:h-10 bg-[#001391] rounded-full"></div>
+            <div class="h-3 md:h-4 w-16 md:w-24 bg-[#001391] rounded-md opacity-20"></div>
+            <div class="h-6 md:h-8 w-16 md:w-20 bg-[#88E783] rounded-md"></div>
+          </div>
+        </div>
+        <!-- Card C: col-span-1 row-span-1 -->
+        <div class="bento-card delay-300 md:col-span-1 bg-[#070E46] text-white p-5 md:p-6 flex flex-col justify-center">
+          <h3 class="font-serif text-lg md:text-xl font-bold mb-1 md:mb-2">Variables (Tokens)</h3>
+          <p class="opacity-70 text-xs md:text-sm">Centralización de colores y espaciados de la marca.</p>
+        </div>
+        <!-- Card D: col-span-1 row-span-1 -->
+        <div class="bento-card delay-400 md:col-span-1 bg-[#FFE761] text-[#070E46] p-5 md:p-6 flex flex-col justify-center">
+          <h3 class="font-serif text-lg md:text-xl font-bold mb-1 md:mb-2">Dev Mode</h3>
+          <p class="opacity-80 text-xs md:text-sm">Espacio para inspección técnica y extracción de código limpio.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3 -->
+  <div id="slide-2" class="slide flex-col justify-center bg-[#070E46] w-full h-full p-6 pb-32 md:p-12 md:pb-32 relative overflow-y-auto overflow-x-hidden">
+    <div class="absolute top-10 right-10 text-white/10 font-serif text-6xl md:text-8xl font-bold z-0 pointer-events-none select-none">
+      BBVA + Figma
+    </div>
+    <div class="z-10 w-full max-w-6xl mx-auto my-auto">
+      <div class="mt-8 md:mt-12 mb-6 md:mb-10">
+        <span class="sticker bg-[#9694FF] text-white font-medium mb-3 md:mb-4">Caso de Uso</span>
+        <h2 class="font-serif text-3xl md:text-5xl font-bold text-[#F7F8F8] mt-3">¿Cómo lo usamos en BBVA?</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6">
+        <!-- Main Card -->
+        <div class="bento-card delay-100 md:col-span-8 bg-[#001391] p-6 md:p-8 rounded-[2rem] border border-white/10">
+          <div class="flex flex-col md:flex-row items-start gap-4 md:gap-6 h-full">
+            <div class="p-3 md:p-4 bg-white/10 rounded-2xl text-[#8BE1E9] flex-shrink-0">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 4l12 12-12 12L4 16 16 4z"/>
+                <circle cx="16" cy="16" r="3" fill="currentColor" stroke="none"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-serif text-2xl md:text-3xl font-bold text-white mb-3 md:mb-4">Global Design System</h3>
+              <p class="text-white/80 text-sm md:text-lg leading-relaxed mb-4 md:mb-6">
+                BBVA utiliza Figma para centralizar sus librerías de componentes (iconos, colores, tipografías, layouts Bentō). Cuando un componente se actualiza en Figma, el cambio se propaga a todos los equipos globales, garantizando una identidad visual única e inquebrantable en todas las geografías.
+              </p>
+              <div class="flex gap-2 md:gap-3 flex-wrap font-medium">
+                <span class="px-3 py-1 bg-white/10 rounded-full text-xs text-white">Escalabilidad</span>
+                <span class="px-3 py-1 bg-white/10 rounded-full text-xs text-white">Consistencia</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Side Card -->
+        <div class="md:col-span-4 flex flex-col gap-4 md:gap-6">
+          <div class="bento-card delay-200 bg-white p-6 md:p-8 rounded-[2rem] flex-1 border border-[#CAD1D8] flex flex-col justify-center">
+            <h4 class="font-serif text-xl md:text-2xl font-bold text-[#070E46] mb-3 md:mb-4">Uniendo Negocio y Tech</h4>
+            <p class="text-[#46536D] text-sm md:text-base leading-relaxed">
+              Diseñadores, Product Owners y Desarrolladores revisan los flujos de la App de BBVA en un único lienzo compartido, eliminando silos.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Controls -->
+  <div class="absolute bottom-6 left-0 right-0 flex flex-col items-center z-50 pointer-events-none">
+    <!-- Progress bar -->
+    <div class="w-32 h-1 bg-black/10 rounded-full mb-3 overflow-hidden backdrop-blur-md border border-white/20">
+      <div id="progress-bar" class="h-full bg-[#001391] rounded-full" style="width: 33.33%; transition: width 0.3s ease-out;"></div>
+    </div>
+    <!-- Buttons -->
+    <div class="flex items-center gap-3 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.1)] border border-gray-100 pointer-events-auto">
+      <button id="btn-prev" onclick="changeSlide(-1)"
+        class="w-8 h-8 flex items-center justify-center rounded-full transition-colors text-gray-300 cursor-not-allowed"
+        disabled>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div id="dots" class="flex gap-2 mx-1"></div>
+      <button id="btn-next" onclick="changeSlide(1)"
+        class="w-8 h-8 flex items-center justify-center rounded-full transition-colors text-[#001391] hover:bg-gray-100">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const TOTAL = 3;
+  let current = 0;
+
+  function buildDots() {
+    const container = document.getElementById('dots');
+    for (let i = 0; i < TOTAL; i++) {
+      const btn = document.createElement('button');
+      btn.className = 'dot-btn w-2 h-2 rounded-full' + (i === 0 ? ' active' : '');
+      btn.setAttribute('aria-label', 'Ir a diapositiva ' + (i + 1));
+      btn.onclick = () => goTo(i);
+      container.appendChild(btn);
+    }
+  }
+
+  function goTo(idx) {
+    document.getElementById('slide-' + current).classList.remove('active');
+    current = idx;
+    const slide = document.getElementById('slide-' + current);
+    slide.classList.add('active');
+
+    // restart animations by cloning bento cards
+    slide.querySelectorAll('.bento-card').forEach(card => {
+      card.style.animation = 'none';
+      void card.offsetHeight;
+      card.style.animation = '';
+    });
+
+    // update progress
+    document.getElementById('progress-bar').style.width = ((current + 1) / TOTAL * 100) + '%';
+
+    // update dots
+    document.querySelectorAll('.dot-btn').forEach((d, i) => {
+      d.classList.toggle('active', i === current);
+      d.style.width = i === current ? '20px' : '8px';
+      d.style.backgroundColor = i === current ? '#001391' : '#d1d5db';
+    });
+
+    // update buttons
+    const prev = document.getElementById('btn-prev');
+    const next = document.getElementById('btn-next');
+    prev.disabled = current === 0;
+    prev.className = 'w-8 h-8 flex items-center justify-center rounded-full transition-colors ' +
+      (current === 0 ? 'text-gray-300 cursor-not-allowed' : 'text-[#001391] hover:bg-gray-100');
+    next.disabled = current === TOTAL - 1;
+    next.className = 'w-8 h-8 flex items-center justify-center rounded-full transition-colors ' +
+      (current === TOTAL - 1 ? 'text-gray-300 cursor-not-allowed' : 'text-[#001391] hover:bg-gray-100');
+  }
+
+  function changeSlide(dir) {
+    const next = current + dir;
+    if (next >= 0 && next < TOTAL) goTo(next);
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); changeSlide(1); }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); changeSlide(-1); }
+  });
+
+  buildDots();
+</script>
+</body>
+</html>
