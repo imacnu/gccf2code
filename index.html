@@ -467,15 +467,20 @@ body {
 .pillar-title { font-size: calc(17px * var(--fz-scale)); font-weight: 600; color: var(--white); }
 .pillar-desc { font-size: calc(13px * var(--fz-scale)); color: rgba(247,248,248,.5); line-height: 1.6; }
 .pillar-bar { width: 100%; height: 4px; background: rgba(255,255,255,.06); border-radius: 2px; overflow: hidden; margin-top: 4px; }
-.bfill { height: 100%; border-radius: 2px; animation: fillbar 2.2s ease-out forwards; width: 0; }
-.bf1{background:var(--serene);animation-name:fill85}
-.bf2{background:var(--lime);animation-name:fill70}
-.bf3{background:var(--canary);animation-name:fill95}
-.bf4{background:var(--purple-acc);animation-name:fill60}
-@keyframes fill85{to{width:85%}}
-@keyframes fill70{to{width:70%}}
-@keyframes fill95{to{width:95%}}
-@keyframes fill60{to{width:60%}}
+.bfill { height: 100%; border-radius: 2px; width: 0; }
+.bf1{background:var(--serene)}
+.bf2{background:var(--lime)}
+.bf3{background:var(--canary)}
+.bf4{background:var(--purple-acc)}
+/* Bars grow only when parent card becomes visible */
+.pc-1.fi.vis .bfill { animation: fill85 1.6s cubic-bezier(0.25,1,0.5,1) 0.1s both; }
+.pc-2.fi.vis .bfill { animation: fill70 1.6s cubic-bezier(0.25,1,0.5,1) 0.3s both; }
+.pc-3.fi.vis .bfill { animation: fill95 1.6s cubic-bezier(0.25,1,0.5,1) 0.5s both; }
+.pc-4.fi.vis .bfill { animation: fill60 1.6s cubic-bezier(0.25,1,0.5,1) 0.7s both; }
+@keyframes fill85{ from{width:0} to{width:85%} }
+@keyframes fill70{ from{width:0} to{width:70%} }
+@keyframes fill95{ from{width:0} to{width:95%} }
+@keyframes fill60{ from{width:0} to{width:60%} }
 
 /* Comparison table */
 .comp-table {
@@ -540,9 +545,31 @@ body {
 .cc-o{background:transparent;border:1px solid rgba(247,248,248,.35);color:var(--sand)}
 
 /* ── FADE IN ── */
-.fi { opacity:0; transform:translateY(24px); transition:opacity .7s ease,transform .7s ease; }
-.fi.vis { opacity:1; transform:translateY(0); }
-.fi-d1{transition-delay:.1s}.fi-d2{transition-delay:.2s}.fi-d3{transition-delay:.3s}.fi-d4{transition-delay:.4s}
+/* ── VISIBILITY — instant, no animation ── */
+.fi { opacity: 0; }
+.fi.vis { opacity: 1; }
+
+/* ── SLIDE NAV BUTTONS ── */
+.slide-nav {
+  position: fixed; bottom: 32px; right: 36px;
+  display: flex; align-items: center; gap: 6px;
+  z-index: 200;
+}
+.slide-nav-btn {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: rgba(5,11,46,0.85);
+  border: 1px solid rgba(133,200,255,0.25);
+  color: var(--serene); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(12px);
+  transition: background .2s, border-color .2s, opacity .2s, transform .15s;
+}
+.slide-nav-btn:hover:not(:disabled) {
+  background: rgba(133,200,255,0.15);
+  border-color: rgba(133,200,255,0.5);
+  transform: scale(1.08);
+}
+.slide-nav-btn:disabled { opacity: 0.2; cursor: default; pointer-events: none; }
 
 /* ── RESPONSIVE ── */
 @media(max-width:900px){
@@ -1043,7 +1070,8 @@ body {
 </footer>
 
 <script>
-const CM = {
+/* ── Color picker ── */
+const CM={
   e:{bg:'#001391',fg:'#85C8FF',hex:"'#001391'",lbl:'#001391'},
   l:{bg:'#88E783',fg:'#070E46',hex:"'#88E783'",lbl:'#88E783'},
   c:{bg:'#FFE761',fg:'#070E46',hex:"'#FFE761'",lbl:'#FFE761'},
@@ -1055,15 +1083,46 @@ function chColor(k){
   document.getElementById('dBtn').style.color=c.fg;
   document.getElementById('fillV').textContent=c.lbl;
   const cv=document.getElementById('cVal');
-  cv.textContent=c.hex;
-  cv.style.color=k==='e'?'#8BE1E9':c.bg;
+  cv.textContent=c.hex; cv.style.color=k==='e'?'#8BE1E9':c.bg;
   document.querySelectorAll('.cswatch').forEach(s=>s.classList.remove('sel'));
   document.getElementById('sw-'+k).classList.add('sel');
 }
-function scrollToScene(i){
-  const el=document.getElementById('s'+i);
-  if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+
+/* ── Slide navigation ── */
+const TOTAL_SCENES=5;
+let currentScene=0;
+
+function updateNavBtns(){
+  document.getElementById('btnPrev').disabled=currentScene===0;
+  document.getElementById('btnNext').disabled=currentScene===TOTAL_SCENES-1;
 }
+
+function navigateTo(idx,dir){
+  if(idx<0||idx>=TOTAL_SCENES)return;
+  const el=document.getElementById('s'+idx);
+  if(!el)return;
+
+  // Reset .fi so bar animations replay from width:0
+  el.querySelectorAll('.fi').forEach(fi=>fi.classList.remove('vis'));
+  void el.offsetHeight; // force reflow
+
+  el.scrollIntoView({behavior:'smooth',block:'start'});
+
+  // Double rAF ensures reflow is painted before re-adding .vis
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    el.querySelectorAll('.fi').forEach(fi=>fi.classList.add('vis'));
+  }));
+}
+
+function scrollToScene(i){
+  navigateTo(i, i>=currentScene?1:-1);
+}
+
+function navigateSlide(dir){
+  navigateTo(currentScene+dir, dir);
+}
+
+/* ── Intersection observer ── */
 const obs=new IntersectionObserver((entries)=>{
   entries.forEach(e=>{
     if(e.isIntersecting){
@@ -1071,14 +1130,24 @@ const obs=new IntersectionObserver((entries)=>{
       const s=e.target.closest('[data-s]')||e.target;
       const idx=s.getAttribute('data-s');
       if(idx!==null){
+        currentScene=+idx;
         document.querySelectorAll('.nav-dot').forEach((d,i)=>d.classList.toggle('active',i===+idx));
         document.getElementById('pf').style.width=((+idx+1)/5*100)+'%';
+        updateNavBtns();
       }
     }
   });
 },{threshold:.2,rootMargin:'-8% 0px'});
 document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
 document.querySelectorAll('[data-s]').forEach(el=>obs.observe(el));
+
+/* ── Keyboard navigation ── */
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();navigateSlide(1);}
+  else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();navigateSlide(-1);}
+});
+
+/* ── Font size control ── */
 const FZ_STEPS=[0.75,0.85,1,1.15,1.3,1.5];
 const FZ_LABELS=['75%','85%','100%','115%','130%','150%'];
 let fzIdx=FZ_STEPS.indexOf(+(localStorage.getItem('bbva_fz')||1));
@@ -1094,6 +1163,16 @@ function adjustZoom(dir){
   applyFz();
 }
 applyFz();
+updateNavBtns();
 </script>
+
+<div class="slide-nav">
+  <button class="slide-nav-btn" id="btnPrev" disabled onclick="navigateSlide(-1)" title="Anterior (←)">
+    <svg width="16" height="16" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <button class="slide-nav-btn" id="btnNext" onclick="navigateSlide(1)" title="Siguiente (→)">
+    <svg width="16" height="16" viewBox="0 0 14 14" fill="none"><path d="M5 2l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+</div>
 </body>
 </html>
