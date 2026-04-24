@@ -68,24 +68,29 @@ body {
 
 /* ── FONT SIZE CONTROL ── */
 .font-ctrl {
-  display: flex; align-items: center; gap: 6px;
-  margin-left: 16px;
+  display: flex; align-items: center;
+  margin-left: 12px;
+  background: rgba(133,200,255,0.05);
+  border: 1px solid rgba(133,200,255,0.13);
+  border-radius: 8px; overflow: hidden;
 }
 .font-ctrl-btn {
-  width: 28px; height: 28px; border-radius: 6px;
-  background: rgba(133,200,255,0.08);
-  border: 1px solid rgba(133,200,255,0.2);
-  color: var(--serene); font-family: 'DM Sans', sans-serif;
-  font-size: 13px; font-weight: 600; cursor: pointer;
+  width: 30px; height: 30px;
+  background: transparent; border: none;
+  color: rgba(133,200,255,0.55); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  transition: background 0.2s, border-color 0.2s;
-  line-height: 1;
+  transition: background 0.15s, color 0.15s;
 }
-.font-ctrl-btn:hover { background: rgba(133,200,255,0.18); border-color: rgba(133,200,255,0.45); }
-.font-ctrl-btn:active { background: rgba(133,200,255,0.28); }
+.font-ctrl-btn:hover { background: rgba(133,200,255,0.12); color: rgba(133,200,255,1); }
+.font-ctrl-btn:active { background: rgba(133,200,255,0.2); }
 .font-ctrl-label {
-  font-size: 10px; color: rgba(133,200,255,0.45);
-  letter-spacing: 1px; text-transform: uppercase; min-width: 26px; text-align: center;
+  font-size: 10px; color: rgba(133,200,255,0.4);
+  letter-spacing: 0.5px; min-width: 32px; text-align: center;
+  border-left: 1px solid rgba(133,200,255,0.1);
+  border-right: 1px solid rgba(133,200,255,0.1);
+  height: 30px; display: flex; align-items: center; justify-content: center;
+  font-variant-numeric: tabular-nums;
+  padding: 0 10px;
 }
 
 /* ── PROGRESS ── */
@@ -727,10 +732,20 @@ tr.sep .sep-inner { background: rgba(255,255,255,.06); border-radius: 6px; paddi
   .left-panel{padding:80px 28px 60px}
   .pillars-grid{grid-template-columns:1fr 1fr}
   .scene-5{padding:60px 24px}
-  .header{padding:20px 24px;gap:16px;flex-wrap:wrap}
-  .bbva-logo img{width:112px}
-  .header-meta{order:3;width:100%}
+  .header{padding:16px 20px;gap:8px}
+  .bbva-logo img{width:100px}
+  .header-meta{display:none}
+  .s1-hero-banner{display:none}
   .footer::after{width:min(78vw,420px);height:140px}
+}
+@media(max-height:820px) and (min-width:901px){
+  .s1-hero-banner{top:78px;gap:14px}
+  .s1-flow-icon{width:42px;height:42px;border-radius:12px}
+  .s1-flow-icon svg{transform:scale(0.78)}
+  .s1-flow-arrow{font-size:20px}
+  .s1-hero-claim{font-size:clamp(17px,1.8vw,26px)}
+  .s1-hero-pill{font-size:11px;padding:4px 13px}
+  .s1-flow-label{font-size:10px}
 }
 </style>
 </head>
@@ -750,9 +765,13 @@ tr.sep .sep-inner { background: rgba(255,255,255,.06); border-radius: 6px; paddi
     <button class="nav-dot" onclick="scrollToScene(4)"></button>
   </div>
   <div class="font-ctrl">
-    <button class="font-ctrl-btn" onclick="adjustZoom(-1)" title="Reducir tamaño">A−</button>
+    <button class="font-ctrl-btn" onclick="adjustZoom(-1)" title="Reducir tamaño">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </button>
     <span class="font-ctrl-label" id="zoomLabel">100%</span>
-    <button class="font-ctrl-btn" onclick="adjustZoom(+1)" title="Aumentar tamaño">A+</button>
+    <button class="font-ctrl-btn" onclick="adjustZoom(+1)" title="Aumentar tamaño">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </button>
   </div>
   <div class="progress-bar"><div class="progress-fill" id="pf"></div></div>
 </header>
