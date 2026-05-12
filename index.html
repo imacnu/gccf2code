@@ -92,6 +92,27 @@ body {
   font-variant-numeric: tabular-nums;
   padding: 0 10px;
 }
+.fs-ctrl{
+  display:flex;
+  align-items:center;
+  margin-left:10px;
+}
+.fs-btn{
+  width:32px;height:32px;border-radius:8px;
+  border:1px solid rgba(133,200,255,0.2);
+  background:rgba(133,200,255,0.05);
+  color:rgba(133,200,255,0.65);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  transition:background .15s,color .15s,border-color .15s,transform .15s;
+}
+.fs-btn:hover{
+  background: rgba(133,200,255,0.12);
+  color: rgba(133,200,255,1);
+  border-color: rgba(133,200,255,0.45);
+  transform: scale(1.04);
+}
+.fs-btn svg{width:15px;height:15px}
 
 /* ── PROGRESS ── */
 .progress-bar { height: 2px; background: rgba(133,200,255,0.1); }
@@ -694,8 +715,295 @@ body {
 .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); animation: pulse 1.5s infinite; }
 .sync-lbl { font-size: 10px; color: var(--lime); letter-spacing: 1.5px; text-transform: uppercase; }
 
-/* ── SCENE 5: PILLARS ── */
-.scene-5 {
+/* ── SCENE 5: DEMO ── */
+.scene-demo {
+  grid-template-columns: 1fr;
+  min-height: auto;
+  display: block;
+  padding: 28px 52px 30px;
+  background: linear-gradient(140deg, #031278 0%, #001391 55%, #00106b 100%);
+  overflow: visible;
+}
+.scene-demo .left-panel{
+  justify-content: flex-start;
+  padding: 14px 52px 24px;
+}
+.demo-flow {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 64px 150px 64px minmax(0,1fr);
+  gap: 14px;
+  align-items: center;
+}
+.demo-phone {
+  border: 1px solid rgba(247,248,248,.18);
+  border-radius: 18px;
+  background: rgba(7,14,70,.52);
+  color: #F7F8F8;
+  padding: 14px;
+  min-height: 520px;
+}
+.demo-phone h4 { margin: 0 0 10px; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: rgba(133,200,255,.9); }
+.demo-phone.design-col{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height: 360px;
+  align-self: center;
+}
+.demo-phone.design-col h4{width:100%;text-align:left}
+.demo-phone.design-col .demo-shot{
+  width: 82%;
+  max-width: 380px;
+}
+.demo-screen {
+  border: 1px solid rgba(0,19,145,.15);
+  border-radius: 10px;
+  background: #fff;
+  padding: 10px;
+}
+.demo-line { height: 8px; border-radius: 6px; background: rgba(0,19,145,.12); margin-bottom: 7px; }
+.demo-line.short { width: 62%; }
+.demo-line.bad { background: rgba(239,68,68,.45); }
+.demo-line.good { background: rgba(34,197,94,.45); }
+.demo-agent-wrap{display:flex;flex-direction:column;align-items:center;gap:10px}
+.demo-link{
+  color: rgba(133,200,255,.95);
+  font-size: 34px;
+  font-weight: 700;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  letter-spacing: 0;
+}
+.demo-agent {
+  width: 132px; height: 132px; border-radius: 999px;
+  border: 1px solid rgba(150,148,255,.65);
+  background: radial-gradient(circle at 40% 35%, rgba(150,148,255,.48), rgba(9,15,76,.85));
+  display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px;
+  box-shadow: 0 10px 28px rgba(0,0,0,.35);
+  animation: af-brain-glow 2.5s ease-in-out infinite;
+}
+.demo-agent img { width: 44px; height: 44px; object-fit: contain; filter: brightness(0) saturate(100%) invert(80%) sepia(30%) saturate(500%) hue-rotate(210deg); }
+.demo-agent span { font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase; color: rgba(247,248,248,.78); }
+.demo-agent-chip{
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(133,200,255,.26);
+  background: rgba(133,200,255,.08);
+  color: rgba(133,200,255,.95);
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.demo-shot {
+  border: 1px solid rgba(133,200,255,.2);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+.demo-shot.design-shot{
+  border-color: rgba(133,200,255,.36);
+  box-shadow: 0 8px 24px rgba(0,0,0,.18);
+}
+.demo-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.demo-note {
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(136,231,131,.08);
+  border: 1px solid rgba(136,231,131,.24);
+  color: rgba(136,231,131,.9);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.demo-note::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--lime);
+}
+.demo-thumb {
+  margin-top: 10px;
+  border: 1px dashed rgba(247,248,248,.22);
+  border-radius: 10px;
+  overflow: hidden;
+  max-width: 260px;
+}
+.demo-thumb img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.demo-pro{
+  position: relative;
+}
+.demo-pro::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(rgba(133,200,255,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(133,200,255,.06) 1px, transparent 1px);
+  background-size: 34px 34px;
+  opacity:.22;
+  pointer-events:none;
+}
+.demo-pro .scene-body{max-width:900px}
+.demo-pro .scene-headline{
+  font-size: clamp(38px, 4.2vw, 60px);
+  margin-bottom: 14px;
+}
+.demo-pro .scene-body{
+  margin-bottom: 18px;
+}
+.demo-pro .demo-flow{
+  margin-top: 10px;
+  grid-template-columns: minmax(0,1fr) 74px 122px 74px minmax(0,1fr);
+  gap: 10px;
+}
+.demo-pro .demo-phone{
+  min-height: 460px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 14px 30px rgba(0,0,0,.22);
+}
+.demo-pro .demo-phone.design-col{
+  min-height: 330px;
+  justify-content:center;
+}
+.demo-pro .demo-phone.design-col .demo-shot{
+  width: 88%;
+  max-width: 440px;
+}
+.demo-badges{
+  width:88%;
+  max-width:440px;
+  margin:10px auto 0;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.demo-badge{
+  font-size:10px;
+  letter-spacing:.8px;
+  text-transform:uppercase;
+  border:1px solid rgba(133,200,255,.3);
+  color:rgba(133,200,255,.95);
+  background:rgba(133,200,255,.08);
+  border-radius:999px;
+  padding:5px 10px;
+}
+.demo-pro .demo-agent{
+  width: 114px;
+  height: 114px;
+  position: relative;
+}
+.demo-pro .demo-agent::after{
+  content:'';
+  position:absolute;
+  width:170px;height:170px;border-radius:50%;
+  background: radial-gradient(circle, rgba(150,148,255,.22), rgba(150,148,255,0) 68%);
+  z-index:-1;
+}
+.demo-pro .demo-agent-chip{
+  color: rgba(136,231,131,.95);
+  border-color: rgba(136,231,131,.3);
+  background: rgba(136,231,131,.1);
+}
+.demo-micro{
+  margin-top:4px;
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  justify-content:center;
+  max-width:180px;
+}
+.demo-micro span{
+  font-size:9px;
+  letter-spacing:.7px;
+  color:rgba(247,248,248,.66);
+  border:1px solid rgba(247,248,248,.18);
+  border-radius:999px;
+  padding:3px 7px;
+}
+.demo-pro .demo-link{
+  font-size: 36px;
+  color: #8BE1E9;
+  text-shadow: 0 0 12px rgba(139,225,233,.45);
+}
+.prod-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  margin:0 0 10px;
+  padding:6px 12px;
+  border-radius:999px;
+  border:1px solid rgba(136,231,131,.34);
+  color:rgba(136,231,131,.95);
+  background:rgba(136,231,131,.12);
+  font-size:10px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+.prod-badge::before{content:'✓';font-weight:700}
+.prod-list{
+  margin:10px 0 0;
+  padding:0;
+  list-style:none;
+  display:grid;
+  gap:6px;
+}
+.prod-list li{
+  font-size:12px;
+  color:rgba(247,248,248,.86);
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.prod-list li::before{
+  content:'✓';
+  color:var(--lime);
+  font-weight:700;
+}
+.cap-bar{
+  margin-top:16px;
+  border:1px solid rgba(136,231,131,.24);
+  background:rgba(136,231,131,.08);
+  border-radius:10px;
+  padding:11px 14px;
+  font-size:11px;
+  letter-spacing:.3px;
+  color:rgba(247,248,248,.9);
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+}
+.cap-bar span{white-space:nowrap}
+@media(max-width:900px){
+  .demo-pro .demo-flow{grid-template-columns:1fr;gap:14px}
+  .demo-pro .demo-phone,
+  .demo-pro .demo-phone.design-col{min-height:auto}
+  .demo-pro .demo-link{transform:rotate(90deg)}
+  .fs-ctrl{display:none}
+}
+@media(max-height:940px) and (min-width:901px){
+  .scene-demo .left-panel{padding-top:42px;padding-bottom:26px}
+  .demo-pro .scene-headline{font-size:clamp(32px,3.2vw,48px)}
+  .demo-pro .demo-phone{min-height:390px}
+  .demo-pro .demo-phone.design-col{min-height:290px}
+}
+
+/* ── SCENE 6: PILLARS ── */
+.scene-6 {
   grid-template-columns: 1fr;
   min-height: auto; display: block;
   padding: 90px 52px 90px;
@@ -845,7 +1153,12 @@ tr.sep .sep-inner { background: rgba(133,200,255,.08); border: 1px solid rgba(13
   .right-panel{display:none}
   .left-panel{padding:80px 28px 60px}
   .pillars-grid{grid-template-columns:1fr 1fr}
-  .scene-5{padding:60px 24px}
+  .scene-demo{padding:60px 24px}
+  .scene-6{padding:60px 24px}
+  .demo-flow{grid-template-columns:1fr;gap:14px}
+  .demo-link{transform:rotate(90deg)}
+  .demo-agent-wrap{margin:0 auto}
+  .demo-thumb{max-width:none}
   .header{padding:16px 20px;gap:8px}
   .bbva-logo img{width:100px}
   .header-meta{display:none}
@@ -903,6 +1216,8 @@ tr.sep .sep-inner { background: rgba(133,200,255,.08); border: 1px solid rgba(13
     <button class="nav-dot" onclick="scrollToScene(2)"></button>
     <button class="nav-dot" onclick="scrollToScene(3)"></button>
     <button class="nav-dot" onclick="scrollToScene(4)"></button>
+    <button class="nav-dot" onclick="scrollToScene(5)"></button>
+    <button class="nav-dot" onclick="scrollToScene(6)"></button>
   </div>
   <div class="font-ctrl">
     <button class="font-ctrl-btn" onclick="adjustZoom(-1)" title="Reducir tamaño">
@@ -911,6 +1226,13 @@ tr.sep .sep-inner { background: rgba(133,200,255,.08); border: 1px solid rgba(13
     <span class="font-ctrl-label" id="zoomLabel">100%</span>
     <button class="font-ctrl-btn" onclick="adjustZoom(+1)" title="Aumentar tamaño">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="fs-ctrl">
+    <button class="fs-btn" id="fsBtn" onclick="toggleFullscreen()" title="Pantalla completa">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M8 3H3v5M16 3h5v5M21 16v5h-5M8 21H3v-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </button>
   </div>
   <div class="progress-bar"><div class="progress-fill" id="pf"></div></div>
@@ -1323,8 +1645,100 @@ tr.sep .sep-inner { background: rgba(133,200,255,.08); border: 1px solid rgba(13
 </section>
 <div class="scene-divider"></div>
 
-<!-- ══════════ SCENE 5: 4 PILLARS ══════════ -->
-<section class="scene-5" data-s="4" id="s4">
+<!-- ══════════ SCENE 5: DEMO ══════════ -->
+<section class="scene scene-demo demo-pro" data-s="4" id="s4">
+  <div class="left-panel fi" style="max-width:100%;">
+    <p class="section-tag" style="color:var(--serene);">Demo 01</p>
+    <h2 class="scene-headline">Diseño correcto. Implementación perfecta.</h2>
+    <p class="scene-body">
+      El agente interpreta diseños en Figma y genera interfaces listas para producción con consistencia visual, estructura responsive y lógica de producto.
+    </p>
+    <div class="demo-flow">
+      <div class="demo-phone design-col">
+        <h4>Entrada · Figma correcto</h4>
+        <div class="demo-shot design-shot">
+          <img src="./assets/correct-figma.png" alt="Figma correcto">
+        </div>
+        <div class="demo-badges">
+          <span class="demo-badge">Design tokens</span>
+          <span class="demo-badge">Autolayout</span>
+          <span class="demo-badge">Component specs</span>
+        </div>
+      </div>
+      <div class="demo-link">➜</div>
+      <div class="demo-agent-wrap">
+        <div class="demo-agent">
+          <img src="./assets/icons/ai.svg" alt="Agente IA">
+          <span>Agente IA</span>
+        </div>
+      </div>
+      <div class="demo-link">➜</div>
+      <div class="demo-phone">
+        <h4>Salida · Desarrollo perfecto</h4>
+        <div class="prod-badge">Production ready</div>
+        <div class="demo-shot">
+          <img src="./assets/correct-dev.png" alt="Desarrollo correcto">
+        </div>
+        <div class="demo-badges" style="width:100%;max-width:none;">
+          <span class="demo-badge">Responsive</span>
+          <span class="demo-badge">Accesible</span>
+          <span class="demo-badge">Componentizado</span>
+          <span class="demo-badge">Tokens sincronizados</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="scene-divider"></div>
+
+<!-- ══════════ SCENE 6: DEMO ══════════ -->
+<section class="scene scene-demo demo-pro" data-s="5" id="s5">
+  <div class="left-panel fi" style="max-width:100%;">
+    <p class="section-tag" style="color:var(--canary);">Demo 02</p>
+    <h2 class="scene-headline">Diseño complejo. Implementación casi perfecta.</h2>
+    <p class="scene-body">
+      Cuando el input llega con problemas de definición, el agente identifica inconsistencias y normaliza el resultado para entregar una pantalla correcta.
+    </p>
+    <div class="demo-flow">
+      <div class="demo-phone design-col">
+        <h4>Entrada · Figma erróneo</h4>
+        <div class="demo-shot design-shot">
+          <img src="./assets/wrong-figma.png" alt="Figma erróneo">
+        </div>
+        <div class="demo-badges">
+          <span class="demo-badge">Design tokens</span>
+          <span class="demo-badge">Autolayout</span>
+          <span class="demo-badge">Component specs</span>
+        </div>
+      </div>
+      <div class="demo-link">➜</div>
+      <div class="demo-agent-wrap">
+        <div class="demo-agent">
+          <img src="./assets/icons/ai.svg" alt="Agente IA">
+          <span>Agente IA</span>
+        </div>
+      </div>
+      <div class="demo-link">➜</div>
+      <div class="demo-phone">
+        <h4>Salida · Desarrollo casi perfecto</h4>
+        <div class="prod-badge">Production ready</div>
+        <div class="demo-shot">
+          <img src="./assets/wrong-dev.png" alt="Desarrollo erróneo detectado">
+        </div>
+        <div class="demo-badges" style="width:100%;max-width:none;">
+          <span class="demo-badge">Responsive</span>
+          <span class="demo-badge">Accesible</span>
+          <span class="demo-badge">Componentizado</span>
+          <span class="demo-badge">Tokens sincronizados</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="scene-divider"></div>
+
+<!-- ══════════ SCENE 7: 4 PILLARS ══════════ -->
+<section class="scene-6" data-s="6" id="s6">
   <div class="s5-header fi">
     <p class="section-tag" style="color:var(--canary);">El Impacto</p>
     <h2 class="scene-headline">Los 4 pilares del <em>nuevo desarrollo</em></h2>
@@ -1508,7 +1922,7 @@ function chColor(k){
 }
 
 /* ── Slide navigation ── */
-const TOTAL_SCENES=5;
+const TOTAL_SCENES=7;
 let currentScene=0;
 
 function updateNavBtns(){
@@ -1556,7 +1970,7 @@ const obs=new IntersectionObserver((entries)=>{
       if(idx!==null){
         currentScene=+idx;
         document.querySelectorAll('.nav-dot').forEach((d,i)=>d.classList.toggle('active',i===+idx));
-        document.getElementById('pf').style.width=((+idx+1)/5*100)+'%';
+        document.getElementById('pf').style.width=((+idx+1)/TOTAL_SCENES*100)+'%';
         updateNavBtns();
       }
     }
@@ -1631,7 +2045,21 @@ function adjustZoom(dir){
   fzIdx=Math.max(0,Math.min(FZ_STEPS.length-1,fzIdx+dir));
   applyFz();
 }
+function syncFsBtn(){
+  const b=document.getElementById('fsBtn');
+  if(!b)return;
+  b.title=document.fullscreenElement?'Salir de pantalla completa':'Pantalla completa';
+}
+async function toggleFullscreen(){
+  try{
+    if(!document.fullscreenElement) await document.documentElement.requestFullscreen();
+    else await document.exitFullscreen();
+  }catch(e){}
+  syncFsBtn();
+}
+document.addEventListener('fullscreenchange',syncFsBtn);
 applyFz();
+syncFsBtn();
 updateNavBtns();
 
 // ── ARCH FLOW: sequential node highlight ──
