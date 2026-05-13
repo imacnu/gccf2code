@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detalle de KPIs - Figma a Codigo con IA + MCP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#151b3f;
+  --fg:#e1ecff;
+  --muted:#9fb0cf;
+  --surface:#1c2450;
+  --surface-2:#252f63;
+  --hairline:#52618f;
+  --accent-ai:#88e783;
+  --accent-ai-2:#85c8ff;
+  --accent-warm:#ffe761;
+  --traditional:#8899bb;
+  --primary-fg:#07103d;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    linear-gradient(180deg,rgba(136,231,131,.12),rgba(136,231,131,0) 360px),
+    radial-gradient(circle at 85% 8%,rgba(133,200,255,.16),transparent 300px),
+    var(--bg);
+  color:var(--fg);
+  font-family:Inter,system-ui,sans-serif;
+  font-feature-settings:"ss01","cv11";
+}
+button,input{font:inherit}
+.dashboard{
+  width:min(1180px,100%);
+  margin:0 auto;
+  padding:44px 24px 56px;
+}
+.hero{margin-bottom:34px}
+.eyebrow{
+  margin:0 0 12px;
+  color:var(--accent-ai);
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+}
+h1,h2,h3,p{margin:0}
+h1,h2,.display{font-family:Fraunces,Playfair Display,Georgia,serif;font-optical-sizing:auto}
+h1{
+  max-width:920px;
+  font-size:clamp(44px,8vw,92px);
+  line-height:.95;
+  letter-spacing:0;
+  font-weight:800;
+}
+em{font-style:italic;color:var(--accent-ai)}
+.hero h1 em:nth-of-type(2){color:var(--accent-ai-2)}
+.hero p{
+  max-width:680px;
+  margin-top:22px;
+  color:var(--muted);
+  font-size:clamp(15px,2vw,18px);
+  line-height:1.65;
+}
+.grid{display:grid;gap:16px}
+.kpi-grid{grid-template-columns:repeat(4,1fr);margin-bottom:22px}
+.card,.panel,.chart-card,.step-card,.summary-card{
+  border:1px solid rgba(133,200,255,.22);
+  background:rgba(28,36,80,.78);
+  box-shadow:0 20px 70px rgba(0,0,0,.18);
+}
+.card{
+  position:relative;
+  min-height:176px;
+  overflow:hidden;
+  border-radius:16px;
+  padding:24px;
+}
+.card::after{
+  content:"";
+  position:absolute;
+  right:-40px;
+  bottom:-48px;
+  width:130px;
+  height:130px;
+  border-radius:50%;
+  background:currentColor;
+  opacity:.045;
+  filter:blur(14px);
+}
+.card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:26px}
+.icon{
+  width:34px;height:34px;border-radius:10px;
+  display:grid;place-items:center;
+  background:rgba(136,231,131,.1);
+  color:var(--accent-ai);
+}
+.card:nth-child(even) .icon{background:rgba(133,200,255,.12);color:var(--accent-ai-2)}
+.card-label{
+  color:var(--muted);
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  text-align:right;
+}
+.card-value{
+  color:var(--accent-ai);
+  font-family:Fraunces,Playfair Display,Georgia,serif;
+  font-size:clamp(42px,5vw,64px);
+  line-height:1;
+  font-variant-numeric:tabular-nums;
+}
+.card:nth-child(even) .card-value{color:var(--accent-ai-2)}
+.card-sub{margin-top:12px;color:var(--muted);font-size:12px;line-height:1.45}
+.panel{
+  border-radius:18px;
+  padding:28px;
+  margin:22px 0;
+}
+.panel-head,.flow-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:26px}
+.panel h2,.flow h2,.comparison h2{font-size:clamp(30px,4vw,44px);line-height:1.05}
+.flow-title{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.flow-sep{
+  color:var(--accent-ai);
+  font-style:normal;
+  font-weight:700;
+  line-height:1;
+  transform:translateY(-1px);
+}
+.reset-btn,.simulate-btn{
+  border:1px solid rgba(133,200,255,.28);
+  border-radius:10px;
+  min-height:38px;
+  padding:0 14px;
+  color:var(--fg);
+  background:rgba(255,255,255,.04);
+  cursor:pointer;
+  transition:transform .2s,background .2s,border-color .2s;
+  white-space:nowrap;
+}
+.reset-btn:hover,.simulate-btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.08);border-color:rgba(133,200,255,.48)}
+.simulate-btn{background:var(--accent-ai);color:var(--primary-fg);border-color:var(--accent-ai);font-weight:700}
+.controls{grid-template-columns:repeat(2,1fr);gap:28px 40px}
+.control-row label{display:flex;align-items:baseline;justify-content:space-between;gap:18px;margin-bottom:12px;color:var(--muted);font-size:14px}
+.control-value{color:var(--accent-ai);font-family:Fraunces,Playfair Display,Georgia,serif;font-size:28px;font-variant-numeric:tabular-nums}
+input[type="range"]{width:100%;accent-color:var(--accent-ai);cursor:pointer}
+.range-limits{display:flex;justify-content:space-between;margin-top:6px;color:rgba(159,176,207,.72);font-size:10px;font-variant-numeric:tabular-nums}
+.flow{margin:22px 0}.flow .panel{margin:0}
+.pipeline{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:stretch;gap:10px}
+.step-card{
+  position:relative;
+  overflow:hidden;
+  border-radius:14px;
+  padding:22px;
+  background:var(--surface-2);
+  transition:transform .25s,border-color .25s;
+}
+.step-card.active{transform:scale(1.03);border-color:var(--accent-ai)}
+.step-card.done{border-color:rgba(136,231,131,.45)}
+.step-card::after{
+  content:"";
+  position:absolute;left:0;bottom:0;height:4px;width:0;
+  background:var(--accent-ai);
+}
+.step-card.active::after{animation:fillStep 1.15s ease forwards}
+@keyframes fillStep{to{width:100%}}
+.step-main{display:flex;align-items:center;gap:14px}
+.step-icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.07);color:var(--muted)}
+.step-card.active .step-icon,.step-card.done .step-icon{background:var(--accent-ai);color:var(--primary-fg)}
+.step-title{font-family:Fraunces,Playfair Display,Georgia,serif;font-size:22px}.step-desc{margin-top:2px;color:var(--muted);font-size:12px}
+.arrow{display:grid;place-items:center;color:var(--accent-ai);font-size:28px;font-weight:700;line-height:1}
+.summary{grid-template-columns:repeat(2,1fr);margin-top:24px}.summary-card{border-radius:14px;padding:20px}.summary-card.ai{border-color:rgba(136,231,131,.45);background:rgba(136,231,131,.06)}
+.summary-label{color:var(--traditional);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.summary-card.ai .summary-label{color:var(--accent-ai)}
+.summary-value{margin-top:8px;font-family:Fraunces,Playfair Display,Georgia,serif;font-size:34px;font-variant-numeric:tabular-nums}.summary-card.ai .summary-value{color:var(--accent-ai)}
+.summary-note{margin-top:4px;color:var(--muted);font-size:12px}
+.comparison{margin-top:22px}.charts{grid-template-columns:repeat(2,1fr);gap:20px}.chart-card{border-radius:14px;background:var(--surface-2);padding:20px;min-width:0}.chart-card h3{font-size:15px;font-weight:600;margin-bottom:12px}.chart{width:100%;height:280px;display:block;overflow:visible}.axis{stroke:rgba(159,176,207,.28);stroke-width:1}.tick{fill:var(--muted);font-size:11px}.legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;color:var(--muted);font-size:12px}.legend span{display:inline-flex;align-items:center;gap:7px}.swatch{width:11px;height:11px;border-radius:3px;background:var(--traditional)}.swatch.ai{background:var(--accent-ai)}
+.table-wrap{margin-top:24px;overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px}th{padding:14px 12px;border-bottom:1px solid rgba(133,200,255,.2);color:var(--muted);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;text-align:right}th:first-child,td:first-child{text-align:left}td{padding:16px 12px;border-bottom:1px solid rgba(133,200,255,.12);font-family:Fraunces,Playfair Display,Georgia,serif;font-variant-numeric:tabular-nums;text-align:right}td:first-child{font-family:Inter,system-ui,sans-serif;color:var(--muted);font-size:13px}.trad{color:var(--traditional)}.ai{color:var(--accent-ai)}.delta{color:var(--accent-ai-2)}
+.footer{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-top:36px;padding-top:24px;border-top:1px solid rgba(133,200,255,.16);color:var(--muted);font-size:13px}.footer strong{color:var(--fg);font-family:Fraunces,Playfair Display,Georgia,serif;font-style:italic;font-size:18px}
+@media (max-width:920px){.kpi-grid,.controls,.charts{grid-template-columns:1fr 1fr}.pipeline{grid-template-columns:1fr}.arrow{transform:rotate(90deg);min-height:18px}.panel-head,.flow-head{align-items:flex-start;flex-direction:column}.dashboard{padding:34px 18px 44px}}
+@media (max-width:620px){.kpi-grid,.controls,.summary,.charts{grid-template-columns:1fr}.card{min-height:150px;padding:20px}th,td{padding:13px 10px}.chart{height:240px}.footer{display:block}.footer strong{display:block;margin-top:10px}}
+</style>
+</head>
+<body>
+<main class="dashboard">
+  <header class="hero">
+    <p class="eyebrow">Dashboard interactivo</p>
+    <h1>De <em>Diseño</em> a <em>Código</em><br>funcional en <span style="color:var(--muted)">horas</span></h1>
+    <p>Con IA + MCP, los equipos producen interfaces hasta <strong style="color:var(--fg)">40x mas rapido</strong>, con menos bugs y menos ciclos de iteracion. Mueve los controles y observa el impacto en tiempo real.</p>
+  </header>
+
+  <section class="grid kpi-grid" aria-label="KPIs principales">
+    <article class="card"><div class="card-top"><div class="icon">T</div><div class="card-label">Time-to-Market</div></div><div class="card-value" id="kpiAiHours">0 h</div><p class="card-sub" id="kpiTradHours"></p></article>
+    <article class="card"><div class="card-top"><div class="icon">A</div><div class="card-label">Aceleracion</div></div><div class="card-value" id="kpiSpeedup">0x</div><p class="card-sub" id="kpiSaved"></p></article>
+    <article class="card"><div class="card-top"><div class="icon">B</div><div class="card-label">Bugs evitados</div></div><div class="card-value" id="kpiBugs">0</div><p class="card-sub" id="kpiBugsSub"></p></article>
+    <article class="card"><div class="card-top"><div class="icon">I</div><div class="card-label">Ciclos de iteracion</div></div><div class="card-value" id="kpiCycles">0</div><p class="card-sub" id="kpiCyclesSub"></p></article>
+  </section>
+
+  <section class="panel" aria-label="Parametros editables">
+    <div class="panel-head">
+      <div><p class="eyebrow">04 · Parametros</p><h2>Ajusta y observa <em>en vivo</em></h2></div>
+      <button class="reset-btn" id="resetBtn" type="button">Reset</button>
+    </div>
+    <div class="grid controls" id="controls"></div>
+  </section>
+
+  <section class="flow" aria-label="Flujo de pipeline">
+    <div class="panel">
+      <div class="flow-head">
+        <div>
+          <p class="eyebrow">05 · Flujo</p>
+          <h2 class="flow-title">
+            <span>Figma</span>
+            <span class="flow-sep" aria-hidden="true">→</span>
+            <span>IA + MCP</span>
+            <span class="flow-sep" aria-hidden="true">→</span>
+            <span>Codigo</span>
+          </h2>
+        </div>
+        <button class="simulate-btn" id="simulateBtn" type="button">Simular pipeline</button>
+      </div>
+      <div class="pipeline" id="pipeline">
+        <article class="step-card" data-step="0"><div class="step-main"><div class="step-icon">F</div><div><div class="step-title">Figma</div><div class="step-desc">Diseno pixel-perfect</div></div></div></article>
+        <div class="arrow" aria-hidden="true">→</div>
+        <article class="step-card" data-step="1"><div class="step-main"><div class="step-icon">AI</div><div><div class="step-title">IA + MCP</div><div class="step-desc">Traduccion semantica</div></div></div></article>
+        <div class="arrow" aria-hidden="true">→</div>
+        <article class="step-card" data-step="2"><div class="step-main"><div class="step-icon">C</div><div><div class="step-title">Codigo</div><div class="step-desc">Componentes listos</div></div></div></article>
+      </div>
+      <div class="grid summary">
+        <div class="summary-card"><p class="summary-label">Tradicional</p><div class="summary-value" id="tradSummary">0 h</div><p class="summary-note">Semanas de handoff manual</p></div>
+        <div class="summary-card ai"><p class="summary-label">IA + MCP</p><div class="summary-value" id="aiSummary">0 h</div><p class="summary-note">De diseno a codigo en horas</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel comparison" aria-label="Comparativa">
+    <header style="margin-bottom:24px"><p class="eyebrow">06 · Comparativa</p><h2>Tradicional <span style="color:var(--muted)">vs</span> <em>IA + MCP</em></h2></header>
+    <div class="grid charts">
+      <article class="chart-card"><h3>Horas por fase</h3><svg class="chart" id="barChart" viewBox="0 0 520 280" role="img" aria-label="Grafico de barras de horas por fase"></svg><div class="legend"><span><i class="swatch"></i>Tradicional</span><span><i class="swatch ai"></i>IA + MCP</span></div></article>
+      <article class="chart-card"><h3>Horas acumuladas a lo largo del proyecto</h3><svg class="chart" id="lineChart" viewBox="0 0 520 280" role="img" aria-label="Grafico de lineas de horas acumuladas"></svg><div class="legend"><span><i class="swatch"></i>Tradicional</span><span><i class="swatch ai"></i>IA + MCP</span></div></article>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Metrica</th><th>Tradicional</th><th>IA + MCP</th><th>Delta</th></tr></thead>
+        <tbody id="metricsTable"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="footer"><span>Datos demo, editables en vivo para presentaciones.</span><strong>Figma -> IA + MCP -> Codigo</strong></footer>
+</main>
+
+<script>
+const defaults={screens:12,hoursPerScreen:16,speedup:40,bugReduction:85};
+let inputs={...defaults};
+let activeTimer=null;
+const controlsConfig=[
+  {key:'screens',label:'Pantallas a implementar',min:1,max:20,step:1,suffix:''},
+  {key:'hoursPerScreen',label:'Horas por pantalla (tradicional)',min:1,max:80,step:1,suffix:' h'},
+  {key:'speedup',label:'Aceleracion con IA + MCP',min:2,max:100,step:1,suffix:'x'},
+  {key:'bugReduction',label:'Reduccion de bugs',min:10,max:99,step:1,suffix:' %'}
+];
+function derive(){
+  const tradHours=inputs.screens*inputs.hoursPerScreen;
+  const aiHours=tradHours/Math.max(inputs.speedup,1);
+  const hoursSaved=tradHours-aiHours;
+  const tradDays=tradHours/8;
+  const aiDays=aiHours/8;
+  const tradBugs=Math.round(inputs.screens*1.6);
+  const aiBugs=Math.round(tradBugs*(1-inputs.bugReduction/100));
+  const bugsAvoided=tradBugs-aiBugs;
+  const iterationCycles={trad:Math.max(1,Math.round(inputs.screens*.5)),ai:Math.max(1,Math.round(inputs.screens*.08))};
+  return{tradHours,aiHours,hoursSaved,tradDays,aiDays,tradBugs,aiBugs,bugsAvoided,iterationCycles};
+}
+function fmtHours(n){return n>=100?Math.round(n)+' h':n.toFixed(1)+' h'}
+function fmtDays(n){return n>=10?Math.round(n)+' d':n.toFixed(1)+' d'}
+function pct(n){return n.toFixed(1)+' %'}
+function renderControls(){
+  document.getElementById('controls').innerHTML=controlsConfig.map(c=>`<div class="control-row"><label for="${c.key}"><span>${c.label}</span><span class="control-value" id="value-${c.key}">${inputs[c.key]}${c.suffix}</span></label><input id="${c.key}" type="range" min="${c.min}" max="${c.max}" step="${c.step}" value="${inputs[c.key]}"><div class="range-limits"><span>${c.min}</span><span>${c.max}</span></div></div>`).join('');
+  controlsConfig.forEach(c=>document.getElementById(c.key).addEventListener('input',e=>{inputs[c.key]=Number(e.target.value);render();}));
+}
+function render(){
+  const d=derive();
+  const speedup=d.aiHours>0?d.tradHours/d.aiHours:0;
+  document.getElementById('kpiAiHours').textContent=fmtHours(d.aiHours);
+  document.getElementById('kpiTradHours').textContent='vs '+fmtHours(d.tradHours)+' con metodo tradicional';
+  document.getElementById('kpiSpeedup').textContent=speedup.toFixed(1)+'x';
+  document.getElementById('kpiSaved').textContent=fmtDays(d.hoursSaved/8)+' ahorrados por entrega';
+  document.getElementById('kpiBugs').textContent=d.bugsAvoided;
+  document.getElementById('kpiBugsSub').textContent='de '+d.tradBugs+' esperados sin IA';
+  document.getElementById('kpiCycles').textContent=d.iterationCycles.ai;
+  document.getElementById('kpiCyclesSub').textContent='vs '+d.iterationCycles.trad+' en handoff manual';
+  document.getElementById('tradSummary').textContent=d.tradHours.toFixed(0)+' h';
+  document.getElementById('aiSummary').textContent=d.aiHours.toFixed(1)+' h';
+  controlsConfig.forEach(c=>{const v=document.getElementById('value-'+c.key);const r=document.getElementById(c.key);if(v)v.textContent=inputs[c.key]+c.suffix;if(r&&Number(r.value)!==inputs[c.key])r.value=inputs[c.key];});
+  renderTable(d,speedup);
+  renderBarChart(d);
+  renderLineChart(d);
+}
+function renderTable(d,speedup){
+  const hoursSavedPct=d.tradHours>0?d.hoursSaved/d.tradHours*100:0;
+  const bugReductionPct=d.tradBugs>0?d.bugsAvoided/d.tradBugs*100:0;
+  const cyclesReductionPct=d.iterationCycles.trad>0?(d.iterationCycles.trad-d.iterationCycles.ai)/d.iterationCycles.trad*100:0;
+  const rows=[
+    ['Horas totales',d.tradHours.toFixed(0)+' h',d.aiHours.toFixed(1)+' h','-'+pct(hoursSavedPct)],
+    ['Dias de trabajo',d.tradDays.toFixed(1)+' d',d.aiDays.toFixed(2)+' d','+'+speedup.toFixed(1)+'x velocidad'],
+    ['Bugs estimados',d.tradBugs,d.aiBugs,'-'+bugReductionPct.toFixed(0)+' %'],
+    ['Ciclos de iteracion',d.iterationCycles.trad,d.iterationCycles.ai,'-'+cyclesReductionPct.toFixed(0)+' %']
+  ];
+  document.getElementById('metricsTable').innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td class="trad">${r[1]}</td><td class="ai">${r[2]}</td><td class="delta">${r[3]}</td></tr>`).join('');
+}
+function axis(svg,max){
+  let html='';
+  for(let i=0;i<=4;i++){const y=230-i*48;html+=`<line class="axis" x1="46" y1="${y}" x2="500" y2="${y}"></line><text class="tick" x="36" y="${y+4}" text-anchor="end">${Math.round(max*i/4)}</text>`;}
+  return html+'<line class="axis" x1="46" y1="230" x2="500" y2="230"></line>';
+}
+function renderBarChart(d){
+  const phases=[['Diseno',.1,.1],['Implement.',.55,.05],['QA/Fixes',.25,.04],['Iteracion',.1,.01]].map(p=>({phase:p[0],trad:+(p[1]*d.tradHours).toFixed(1),ai:+(p[2]*d.tradHours).toFixed(1)}));
+  const max=Math.max(...phases.flatMap(p=>[p.trad,p.ai]),1)*1.15;
+  let html=axis(null,max);
+  phases.forEach((p,i)=>{const groupX=72+i*108;const tradH=p.trad/max*190;const aiH=p.ai/max*190;html+=`<rect x="${groupX}" y="${230-tradH}" width="30" height="${tradH}" rx="5" fill="var(--traditional)"></rect><rect x="${groupX+36}" y="${230-aiH}" width="30" height="${aiH}" rx="5" fill="var(--accent-ai)"></rect><text class="tick" x="${groupX+33}" y="254" text-anchor="middle">${p.phase}</text>`;});
+  document.getElementById('barChart').innerHTML=html;
+}
+function renderLineChart(d){
+  const points=Array.from({length:11}).map((_,i)=>{const t=i/10;return{week:'S'+i,trad:+(d.tradHours*Math.pow(t,1.1)).toFixed(1),ai:+(d.aiHours*Math.min(1,t*4)).toFixed(2)}});
+  const max=Math.max(...points.flatMap(p=>[p.trad,p.ai]),1)*1.08;
+  const x=i=>54+i*44;
+  const y=v=>230-v/max*190;
+  const tradPath=points.map((p,i)=>(i?'L':'M')+x(i)+' '+y(p.trad)).join(' ');
+  const aiPath=points.map((p,i)=>(i?'L':'M')+x(i)+' '+y(p.ai)).join(' ');
+  let html=axis(null,max)+`<path d="${tradPath}" fill="none" stroke="var(--traditional)" stroke-width="3"></path><path d="${aiPath}" fill="none" stroke="var(--accent-ai)" stroke-width="4"></path>`;
+  points.forEach((p,i)=>{if(i%2===0)html+=`<text class="tick" x="${x(i)}" y="254" text-anchor="middle">${p.week}</text>`;});
+  document.getElementById('lineChart').innerHTML=html;
+}
+function simulatePipeline(){
+  clearInterval(activeTimer);
+  const button=document.getElementById('simulateBtn');
+  const steps=[...document.querySelectorAll('.step-card')];
+  let active=0;
+  steps.forEach(s=>s.classList.remove('active','done'));
+  button.textContent='Simulando...';
+  button.disabled=true;
+  function paint(){steps.forEach((s,i)=>{s.classList.toggle('active',i===active);s.classList.toggle('done',i<active);});active++;if(active>steps.length){clearInterval(activeTimer);steps.forEach(s=>s.classList.remove('active'));steps.forEach(s=>s.classList.add('done'));button.textContent='Simular pipeline';button.disabled=false;}}
+  paint();
+  activeTimer=setInterval(paint,1150);
+}
+document.getElementById('resetBtn').addEventListener('click',()=>{inputs={...defaults};render();});
+document.getElementById('simulateBtn').addEventListener('click',simulatePipeline);
+renderControls();
+render();
+</script>
+</body>
+</html>
